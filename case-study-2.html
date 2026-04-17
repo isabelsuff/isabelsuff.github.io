@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ★ EDIT: Replace with your project name -->
+  <title>Isabel — GA Repository</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #1e1e24;
+      --bg-light: #e8e5df;
+      --ink-light: #f2f0ec;
+      --ink-dark: #1e1e24;
+      --muted-light: #a09d96;
+      --muted-dark: #6b6870;
+      --accent: #5b6abf;
+      --card: #d4d1ca;
+      --card-dark: #2a2a32;
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; cursor: none; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      cursor: none;
+      background: var(--bg-dark);
+      color: var(--ink-light);
+    }
+
+    /* ---------- CURSOR ---------- */
+    .cursor-dot {
+      position: fixed; top: 0; left: 0;
+      width: 8px; height: 8px;
+      background: white; border-radius: 50%;
+      pointer-events: none; z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      position: fixed; top: 0; left: 0;
+      width: 40px; height: 40px;
+      border: 1.5px solid rgba(255,255,255,0.5);
+      border-radius: 50%; pointer-events: none; z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: width 0.35s cubic-bezier(0.22,1,0.36,1),
+                  height 0.35s cubic-bezier(0.22,1,0.36,1),
+                  background 0.3s, border-color 0.3s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring.hover {
+      width: 80px; height: 80px;
+      background: rgba(255,255,255,0.08);
+      border-color: white;
+    }
+    .cursor-dot.hover { opacity: 0; }
+    .cursor-trail {
+      position: fixed; width: 6px; height: 6px;
+      background: var(--accent); border-radius: 50%;
+      pointer-events: none; z-index: 99997;
+      opacity: 0; transform: translate(-50%, -50%);
+    }
+    @media (max-width: 900px) {
+      html, body { cursor: auto; }
+      .cursor-dot, .cursor-ring, .cursor-trail { display: none; }
+    }
+
+    /* ---------- SHARED ---------- */
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ---------- NAV ---------- */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+    }
+
+    .back-link {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--ink-light); text-decoration: none;
+      padding: 10px 24px;
+      background: rgba(30,30,36,0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      transition: background 0.3s;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .back-link:hover { background: var(--accent); }
+
+    .back-link svg {
+      width: 16px; height: 16px;
+    }
+
+    /* ---------- HERO ---------- */
+    .case-hero {
+      padding: 160px 0 80px;
+    }
+
+    .case-hero .label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .case-hero h1 {
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      margin-bottom: 24px;
+    }
+
+    .case-hero .summary {
+      font-size: 18px;
+      color: var(--muted-light);
+      max-width: 620px;
+      line-height: 1.6;
+    }
+
+    /* Hero image */
+    .case-hero-image {
+      margin-top: 64px;
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      /* aspect-ratio removed */
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .case-hero-image img { border-radius: var(--radius);
+      width: 100%; height: auto; object-fit: contain;
+    }
+
+    /* ---------- OVERVIEW GRID ---------- */
+    .overview {
+      padding: 80px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+
+    .overview-item .ov-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted-light);
+      margin-bottom: 8px;
+    }
+
+    .overview-item .ov-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px; font-weight: 600;
+      color: var(--ink-light);
+    }
+
+    /* ---------- SECTION TEMPLATE ---------- */
+    .case-section {
+      padding: 100px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .section-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .case-section h2 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+    }
+
+    .case-section .body-text {
+      font-size: 16px;
+      color: var(--muted-light);
+      max-width: 680px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    /* ---------- IMAGE PLACEHOLDERS ---------- */
+    .img-full {
+      /* natural sizing */
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      /* aspect-ratio removed */
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s;
+    }
+
+    .img-full:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+    }
+
+    .img-full img { width: 100%; height: auto; object-fit: contain; border-radius: var(--radius); }
+
+    .img-half-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .img-half {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      /* aspect-ratio removed */
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s;
+    }
+
+    .img-half:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+    }
+
+    .img-half img { width: 100%; height: auto; object-fit: contain; border-radius: var(--radius); }
+
+    .img-triple-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .img-third {
+      background: var(--card-dark);
+      border-radius: var(--radius-sm);
+      /* aspect-ratio removed */
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s;
+    }
+
+    .img-third:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+    }
+
+    .img-third img { width: 100%; height: auto; object-fit: contain; border-radius: var(--radius-sm); }
+
+    .placeholder {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600; font-size: 16px;
+      color: var(--muted-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .img-caption {
+      font-size: 13px;
+      color: var(--muted-dark);
+      margin-top: 8px;
+      margin-bottom: 32px;
+    }
+
+    /* ---------- CALLOUT BOX ---------- */
+    .callout {
+      background: var(--card-dark);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 28px 32px;
+      margin: 40px 0;
+    }
+
+    .callout p {
+      font-size: 16px;
+      color: var(--ink-light);
+      line-height: 1.6;
+    }
+
+    .callout .callout-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    /* ---------- USER PERSONA CARD ---------- */
+    .persona-card {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .persona-avatar {
+      width: 200px; height: 200px;
+      background: #363640;
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    .persona-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .persona-info h3 {
+      font-size: 28px; font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .persona-role {
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .persona-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .persona-detail .pd-label {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted-light);
+      margin-bottom: 4px;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .persona-detail .pd-value {
+      font-size: 15px;
+      color: var(--ink-light);
+    }
+
+    .persona-quote {
+      font-style: italic;
+      font-size: 16px;
+      color: var(--muted-light);
+      padding-left: 16px;
+      border-left: 2px solid var(--accent);
+      margin-top: 20px;
+    }
+
+    /* ---------- BRAND KIT DISPLAY ---------- */
+    .brand-colors {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 80px; height: 80px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .swatch-label {
+      font-family: 'JetBrains Mono', 'Outfit', monospace;
+      font-size: 11px;
+      color: var(--muted-light);
+      letter-spacing: 0.04em;
+    }
+
+    .brand-fonts {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      padding: 40px;
+      margin-bottom: 24px;
+    }
+
+    .font-sample {
+      margin-bottom: 32px;
+    }
+
+    .font-sample:last-child { margin-bottom: 0; }
+
+    .font-sample .fs-label {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted-light);
+      margin-bottom: 8px;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .font-sample .fs-display {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--ink-light);
+      letter-spacing: -0.02em;
+    }
+
+    .font-sample .fs-chars {
+      font-size: 16px;
+      color: var(--muted-light);
+      margin-top: 4px;
+    }
+
+    /* ---------- FEEDBACK GRID ---------- */
+    .feedback-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .feedback-card {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      padding: 32px;
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .feedback-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .feedback-card .stars {
+      color: var(--accent);
+      font-size: 14px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+
+    .feedback-card p {
+      font-size: 15px;
+      color: var(--muted-light);
+      line-height: 1.6;
+      font-style: italic;
+      margin-bottom: 16px;
+    }
+
+    .feedback-card .fb-author {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 600;
+      color: var(--ink-light);
+    }
+
+    .feedback-card .fb-role {
+      font-size: 12px;
+      color: var(--muted-dark);
+    }
+
+    /* ---------- NEXT PROJECT ---------- */
+    .next-project {
+      padding: 100px 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+    }
+
+    .next-project .np-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted-light);
+      margin-bottom: 16px;
+    }
+
+    .next-project a {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      color: var(--ink-light);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      transition: color 0.3s;
+      display: inline-block;
+    }
+
+    .next-project a:hover { color: var(--accent); }
+
+    .next-project a .arrow {
+      display: inline-block;
+      transition: transform 0.3s;
+      margin-left: 12px;
+    }
+
+    .next-project a:hover .arrow {
+      transform: translateX(8px);
+    }
+
+    /* ---------- SCROLL REVEAL ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .reveal-left {
+      opacity: 0; transform: translateX(-60px);
+      transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    .reveal-right {
+      opacity: 0; transform: translateX(60px);
+      transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    .reveal-scale {
+      opacity: 0; transform: scale(0.92);
+      transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+    .stagger-cards > * {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .stagger-cards.visible > *:nth-child(1) { transition-delay: 0.0s; }
+    .stagger-cards.visible > *:nth-child(2) { transition-delay: 0.12s; }
+    .stagger-cards.visible > *:nth-child(3) { transition-delay: 0.24s; }
+    .stagger-cards.visible > *:nth-child(4) { transition-delay: 0.36s; }
+    .stagger-cards.visible > * { opacity: 1; transform: translateY(0); }
+
+    /* ---------- MOBILE ---------- */
+    @media (max-width: 768px) {
+      .container { padding: 0 24px; }
+      nav { padding: 16px 24px; }
+      .case-hero { padding: 120px 0 60px; }
+      .overview-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .case-section { padding: 60px 0; }
+      .img-half-grid { grid-template-columns: 1fr; }
+      .img-triple-grid { grid-template-columns: 1fr; }
+      .persona-card { grid-template-columns: 1fr; }
+      .persona-avatar { width: 120px; height: 120px; }
+      .persona-details { grid-template-columns: 1fr; }
+      .feedback-grid { grid-template-columns: 1fr; }
+      .brand-fonts .fs-display { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ============================== -->
+  <!-- NAV                            -->
+  <!-- ============================== -->
+  <!-- ★ EDIT: Update the href to point back to your main portfolio -->
+  <nav>
+    <a class="back-link" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to Home
+    </a>
+  </nav>
+
+  <div class="container">
+
+    <!-- HERO -->
+    <div class="case-hero">
+      <div class="label reveal">Case Study</div>
+      <h1 class="reveal">GA Repository</h1>
+      <p class="summary reveal">
+        An internal web tool for the Apple Developer Academy at Michigan State University — a centralized repository where staff can search, filter, and manage the hundreds of guiding activities created across cohorts and domains.
+      </p>
+
+      <div class="case-hero-image reveal-scale">
+        <img src="ga-landing.png" alt="GA Repository landing page with sidebar navigation and search bar">
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="overview reveal">
+      <div class="overview-grid stagger-cards">
+        <div class="overview-item">
+          <div class="ov-label">Timeline</div>
+          <div class="ov-value">2 Weeks</div>
+        </div>
+        <div class="overview-item">
+          <div class="ov-label">Location</div>
+          <div class="ov-value">Detroit, MI</div>
+        </div>
+        <div class="overview-item">
+          <div class="ov-label">Role</div>
+          <div class="ov-value">Designer</div>
+        </div>
+        <div class="overview-item">
+          <div class="ov-label">Tools</div>
+          <div class="ov-value">Sketch</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 01 — THE PROBLEM -->
+    <div class="case-section">
+      <div class="section-num reveal">01 — The Problem</div>
+      <h2 class="reveal">Finding a needle in a haystack</h2>
+      <p class="body-text reveal">
+        The Apple Developer Academy creates a massive volume of guiding activities across multiple cohorts, journeys, and domains — from Challenges and Preludes to Coding and Design. Over time, these activities pile up with no centralized way to find, filter, or manage them. Staff members couldn't easily locate a specific activity, filter by year or cohort, or see what had already been created across domains. Valuable work was getting lost or duplicated because there was simply no system to navigate it all. We needed a clean, searchable repository that made the entire archive accessible in seconds.
+      </p>
+
+      <div class="callout reveal">
+        <div class="callout-label">Key Insight</div>
+        <p>"The activities existed — the problem was nobody could find them. A powerful search and filter system would unlock years of accumulated work."</p>
+      </div>
+    </div>
+
+    <!-- 02 — USER PERSONA -->
+    <div class="case-section">
+      <div class="section-num reveal">02 — User Persona</div>
+      <h2 class="reveal">Who we're designing for</h2>
+      <p class="body-text reveal">
+        Our users are Academy staff — mentors, program leads, and curriculum designers who need to quickly find existing guiding activities, reference past work, or add new content. They're busy, often working across multiple domains, and don't have time to dig through folders or ask colleagues where things are.
+      </p>
+
+      <div class="persona-card reveal">
+        <div class="persona-avatar">
+          <img src="persona-jordan.png" alt="Jordan Mitchell">
+        </div>
+        <div class="persona-info">
+          <h3>Jordan Mitchell</h3>
+          <div class="persona-role">Academy Mentor / Curriculum Lead</div>
+          <div class="persona-details">
+            <div class="persona-detail">
+              <div class="pd-label">Age</div>
+              <div class="pd-value">34</div>
+            </div>
+            <div class="persona-detail">
+              <div class="pd-label">Location</div>
+              <div class="pd-value">Detroit, MI</div>
+            </div>
+            <div class="persona-detail">
+              <div class="pd-label">Goals</div>
+              <div class="pd-value">Find past activities quickly, avoid duplicating work, add new activities with proper metadata</div>
+            </div>
+            <div class="persona-detail">
+              <div class="pd-label">Frustrations</div>
+              <div class="pd-value">Can't find activities from previous cohorts, no way to filter by domain or year, adding new activities is unstructured</div>
+            </div>
+          </div>
+          <div class="persona-quote">"I know we made something like this last year, but I have no idea where it lives."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 — BRAND KIT -->
+    <div class="case-section">
+      <div class="section-num reveal">03 — Brand Kit</div>
+      <h2 class="reveal">Dark, focused, functional</h2>
+      <p class="body-text reveal">
+        The GA Repository's visual identity mirrors the Apple Developer Academy's existing branding — a dark interface with crisp white content areas and a signature neon green accent for primary actions. The design is intentionally utilitarian: it's a tool, not a showcase. SF Pro Semibold keeps everything clean and readable, and domain-specific color coding (green for Design, yellow for Marketing, peach for Coding) helps users scan content at a glance. Author tags use distinct colors to make attribution clear.
+      </p>
+
+      <div class="brand-colors reveal stagger-cards">
+        <div class="color-swatch">
+          <div class="swatch" style="background: #F8F8F8;"></div>
+          <span class="swatch-label">#F8F8F8</span>
+        </div>
+        <div class="color-swatch">
+          <div class="swatch" style="background: #343434;"></div>
+          <span class="swatch-label">#343434</span>
+        </div>
+        <div class="color-swatch">
+          <div class="swatch" style="background: #252525;"></div>
+          <span class="swatch-label">#252525</span>
+        </div>
+        <div class="color-swatch">
+          <div class="swatch" style="background: #76FF7A;"></div>
+          <span class="swatch-label">#76FF7A</span>
+        </div>
+        <div class="color-swatch">
+          <div class="swatch" style="background: #FFFFFF;"></div>
+          <span class="swatch-label">#FFFFFF</span>
+        </div>
+      </div>
+
+      <div class="brand-fonts reveal">
+        <div class="font-sample">
+          <div class="fs-label">Primary Font</div>
+          <div class="fs-display" style="font-family: -apple-system, 'SF Pro', sans-serif; font-weight: 600;">SF Pro Semibold</div>
+          <div class="fs-chars">Aa Bb Cc Dd Ee Ff Gg 0123456789</div>
+        </div>
+      </div>
+
+      <div class="img-full reveal-scale" style="margin-top: 24px;">
+        <img src="ga-styleguide.png" alt="GA Repository style guide showing colors, fonts, icons, domain tags, and author color coding">
+      </div>
+      <p class="img-caption reveal">Complete style guide — color system, typography, icons, domain tags, and author color coding</p>
+    </div>
+
+    <!-- 04 — THE FINAL DESIGN -->
+    <div class="case-section">
+      <div class="section-num reveal">04 — The Final Design</div>
+      <h2 class="reveal">Everything in one place</h2>
+      <p class="body-text reveal">
+        The final design centers around three core experiences: a landing page with a prominent search bar and sidebar navigation organized by Journeys (Challenges, Preludes, Interludes, Epilogues, Foundations) and Domains (Coding, Design, M&M, Cross Domain); an "Add New" flow where staff can create new guiding activities with structured fields for domain, name, description, date, author, keynote uploads, and learning objectives; and a browsable archive organized by cohort with activity detail views showing key learnings, planning canvases, tags, and version history.
+      </p>
+
+      <div class="img-full reveal-scale">
+        <img src="ga-landing.png" alt="Landing page with 'What are you looking for today?' search and sidebar navigation">
+      </div>
+      <p class="img-caption reveal">Landing page — search-first design with journey and domain navigation in the sidebar</p>
+
+      <div class="img-full reveal-scale">
+        <img src="ga-addnew.png" alt="Add New guiding activity form with fields for domain, name, description, date, author, and file upload">
+      </div>
+      <p class="img-caption reveal">Add New flow — structured form for creating guiding activities with all required metadata</p>
+
+      <div class="img-full reveal-scale">
+        <img src="ga-assets.png" alt="GA Repo assets showing sidebar states, cohort lists, and activity detail view with tags and version history">
+      </div>
+      <p class="img-caption reveal">Component system — sidebar states, cohort browsing, activity detail views, and metadata structure</p>
+    </div>
+
+    <!-- NEXT PROJECT -->
+    <div class="next-project reveal">
+      <div class="np-label">Next Project</div>
+      <a href="case-study-3.html">
+        What Dat Is? <span class="arrow">→</span>
+      </a>
+    </div>
+
+  </div><!-- .container -->
+
+  <script>
+    // ========== CURSOR + TRAIL ==========
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+    const TRAIL_COUNT = 8;
+    const trails = [];
+    for (let i = 0; i < TRAIL_COUNT; i++) {
+      const t = document.createElement('div');
+      t.classList.add('cursor-trail');
+      document.body.appendChild(t);
+      trails.push({ el: t, x: 0, y: 0 });
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      dot.style.left = mouseX + 'px';
+      dot.style.top = mouseY + 'px';
+    });
+
+    function animateCursor() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+
+      let prevX = mouseX, prevY = mouseY;
+      trails.forEach((t, i) => {
+        const speed = 0.25 - (i * 0.025);
+        t.x += (prevX - t.x) * speed;
+        t.y += (prevY - t.y) * speed;
+        t.el.style.left = t.x + 'px';
+        t.el.style.top = t.y + 'px';
+        t.el.style.opacity = (1 - i / TRAIL_COUNT) * 0.35;
+        t.el.style.width = t.el.style.height = (6 - i * 0.5) + 'px';
+        prevX = t.x; prevY = t.y;
+      });
+
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    document.querySelectorAll('a, button, .img-full, .img-half, .img-third, .feedback-card, .persona-card, .color-swatch').forEach(el => {
+      el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
+      el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
+    });
+
+    // ========== SCROLL REVEAL ==========
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger-cards').forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>

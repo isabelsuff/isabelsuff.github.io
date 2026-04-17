@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Isabel — Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #1e1e24;
+      --bg-light: #e8e5df;
+      --ink-light: #f2f0ec;
+      --ink-dark: #1e1e24;
+      --muted-light: #a09d96;
+      --muted-dark: #6b6870;
+      --accent: #5b6abf;
+      --card: #d4d1ca;
+      --card-dark: #2a2a32;
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; cursor: none; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ---------- CUSTOM CURSOR + TRAIL ---------- */
+    .cursor-dot {
+      position: fixed; top: 0; left: 0;
+      width: 8px; height: 8px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none; z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      position: fixed; top: 0; left: 0;
+      width: 40px; height: 40px;
+      border: 1.5px solid rgba(255,255,255,0.5);
+      border-radius: 50%;
+      pointer-events: none; z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: width 0.35s cubic-bezier(0.22,1,0.36,1),
+                  height 0.35s cubic-bezier(0.22,1,0.36,1),
+                  background 0.3s, border-color 0.3s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring.hover {
+      width: 80px; height: 80px;
+      background: rgba(255,255,255,0.08);
+      border-color: white;
+    }
+    .cursor-dot.hover { opacity: 0; }
+
+    .cursor-trail {
+      position: fixed;
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99997;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+    }
+
+    @media (max-width: 900px) {
+      html, body { cursor: auto; }
+      .cursor-dot, .cursor-ring, .cursor-trail { display: none; }
+    }
+
+    /* ---------- SHARED ---------- */
+    h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+
+    .page-title {
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .accent-pill {
+      display: inline-block;
+      width: clamp(80px, 12vw, 160px);
+      height: clamp(28px, 3.5vw, 48px);
+      background: var(--accent);
+      border-radius: 999px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .accent-pill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .section-pad {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 80px 48px;
+    }
+
+    /* ---------- FLOATING SHAPES ---------- */
+    .floater {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.07;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ---------- NAV ---------- */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .nav-bar {
+      display: flex;
+      gap: 0;
+      background: rgba(30,30,36,0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 6px;
+    }
+
+    .nav-bar a {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-light);
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 999px;
+      transition: background 0.3s, color 0.2s;
+    }
+
+    .nav-bar a:hover,
+    .nav-bar a.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* ---------- HOME ---------- */
+    #home {
+      background: var(--bg-light);
+      color: var(--ink-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #home .floater-1 {
+      width: 500px; height: 500px;
+      background: var(--accent);
+      top: -200px; right: -200px;
+    }
+    #home .floater-2 {
+      width: 300px; height: 300px;
+      background: var(--ink-dark);
+      bottom: 10%; left: -120px;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-photo {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 3px solid var(--accent);
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .hero-photo:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .hero-photo-placeholder {
+      width: 100%; height: 100%;
+      background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 40px;
+      color: var(--muted-dark);
+    }
+
+    .hero-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(52px, 9vw, 120px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.04em;
+      line-height: 0.9;
+      margin-bottom: 12px;
+    }
+
+    .hero-text h1 .char {
+      display: inline-block;
+      animation: charUp 0.8s cubic-bezier(0.22,1,0.36,1) backwards;
+    }
+
+    @keyframes charUp {
+      0% { transform: translateY(60px) rotate(8deg); opacity: 0; }
+      100% { transform: translateY(0) rotate(0); opacity: 1; }
+    }
+
+    .hero-text h1 .line-2 {
+      display: block;
+    }
+
+    .specialties {
+      font-size: 15px;
+      color: var(--muted-dark);
+      max-width: 340px;
+      line-height: 1.5;
+      padding-left: 20px;
+      border-left: 2px solid var(--accent);
+      margin-top: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .scroll-arrow {
+      display: flex;
+      justify-content: center;
+      margin-top: 48px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .scroll-arrow svg {
+      animation: bob 2s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(12px); }
+    }
+
+    /* ---------- PROJECT CARDS (shared) ---------- */
+    .project-grid,
+    .project-grid-dark {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .project-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.15);
+    }
+
+    .project-card .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(30,30,36,0.9), transparent 60%);
+      opacity: 0; transition: opacity 0.4s;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 28px; border-radius: var(--radius); z-index: 2;
+    }
+
+    .project-card:hover .overlay { opacity: 1; }
+
+    .project-card .overlay h3 {
+      font-size: 22px; font-weight: 700; color: white; margin-bottom: 4px;
+      transform: translateY(12px);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+    .project-card:hover .overlay h3 { transform: translateY(0); }
+
+    .project-card .overlay p {
+      font-size: 14px; color: var(--muted-light);
+      transform: translateY(12px);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1) 0.05s;
+    }
+    .project-card:hover .overlay p { transform: translateY(0); }
+
+    .project-card img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .placeholder {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--muted-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    a.card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    /* Dark variant */
+    .project-card-dark {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s;
+    }
+
+    .project-card-dark:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.3);
+    }
+
+    .project-card-dark .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(30,30,36,0.9), transparent 60%);
+      opacity: 0; transition: opacity 0.4s;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 28px; border-radius: var(--radius);
+    }
+
+    .project-card-dark:hover .overlay { opacity: 1; }
+    .project-card-dark .overlay h3 { font-size: 20px; font-weight: 700; color: white; margin-bottom: 4px; }
+    .project-card-dark .overlay p { font-size: 14px; color: var(--muted-light); }
+    .project-card-dark img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ---------- RECENT PROJECTS ---------- */
+    .recent-projects { padding-top: 80px; position: relative; z-index: 1; }
+
+    .recent-projects h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      text-underline-offset: 8px;
+      text-decoration-thickness: 3px;
+      margin-bottom: 40px;
+    }
+
+    /* ---------- ABOUT STRIP ON HOME ---------- */
+    .about-strip {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 100px;
+      background: var(--card);
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s;
+    }
+
+    .about-strip:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.12);
+    }
+
+    .about-strip-img {
+      background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 280px;
+      overflow: hidden;
+    }
+
+    .about-strip-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(100%);
+      transition: filter 0.6s, transform 0.6s;
+    }
+
+    .about-strip:hover .about-strip-img img {
+      filter: grayscale(0%);
+      transform: scale(1.05);
+    }
+
+    .about-strip-text {
+      display: flex; align-items: center;
+      padding: 40px 48px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      color: var(--ink-dark);
+    }
+
+    /* ---------- PROJECTS SECTION (dark) ---------- */
+    #projects {
+      background: var(--bg-dark);
+      color: var(--ink-light);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #projects .floater-1 {
+      width: 400px; height: 400px;
+      background: var(--accent);
+      top: 20%; right: -180px;
+    }
+
+    #projects .page-title { color: var(--ink-light); }
+
+    .projects-intro {
+      font-size: 15px;
+      color: var(--muted-light);
+      max-width: 480px;
+      line-height: 1.6;
+      padding-left: 20px;
+      border-left: 2px solid var(--accent);
+      margin: 32px 0 64px;
+      position: relative; z-index: 1;
+    }
+
+    .featured-card {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      aspect-ratio: 16/7;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s;
+      margin-bottom: 16px;
+      z-index: 1;
+    }
+
+    .featured-card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 32px 64px rgba(0,0,0,0.3);
+    }
+
+    .featured-card .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(30,30,36,0.9), transparent 50%);
+      opacity: 0; transition: opacity 0.4s;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 36px; border-radius: var(--radius);
+    }
+
+    .featured-card:hover .overlay { opacity: 1; }
+    .featured-card .overlay h3 { font-size: 28px; font-weight: 700; color: white; margin-bottom: 4px; }
+    .featured-card .overlay p { font-size: 15px; color: var(--muted-light); }
+    .featured-card img { width: 100%; height: 100%; object-fit: cover; }
+
+    .project-meta {
+      padding-left: 16px;
+      border-left: 2px solid var(--accent);
+      margin-bottom: 48px;
+      position: relative; z-index: 1;
+    }
+
+    .project-meta h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px; font-weight: 600; color: var(--ink-light);
+    }
+
+    .project-meta p { font-size: 14px; color: var(--muted-light); }
+
+    /* ---------- ABOUT (dark) ---------- */
+    #about {
+      background: var(--bg-dark);
+      color: var(--ink-light);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #about .floater-1 {
+      width: 350px; height: 350px;
+      background: var(--accent);
+      bottom: 10%; left: -150px;
+    }
+
+    #about .page-title { color: var(--ink-light); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      margin-top: 64px;
+      position: relative; z-index: 1;
+    }
+
+    .about-desc {
+      font-size: 16px;
+      color: var(--muted-light);
+      line-height: 1.6;
+      padding-left: 20px;
+      border-left: 2px solid var(--accent);
+    }
+
+    .about-photo {
+      background: var(--card-dark);
+      border-radius: var(--radius);
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .about-photo:hover {
+      transform: rotate(-2deg) scale(1.03);
+    }
+
+    .about-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+    .hobbies { margin-top: 80px; position: relative; z-index: 1; }
+
+    .hobbies h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px; font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 32px;
+      color: var(--ink-light);
+    }
+
+    .hobbies-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .hobby-card {
+      background: var(--card-dark);
+      border-radius: var(--radius-sm);
+      aspect-ratio: 1/1;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .hobby-card:nth-child(1):hover { transform: scale(1.06) rotate(-3deg); }
+    .hobby-card:nth-child(2):hover { transform: scale(1.06) rotate(2deg); }
+    .hobby-card:nth-child(3):hover { transform: scale(1.06) rotate(-2deg); }
+
+    .hobby-card img { width: 100%; height: 100%; object-fit: cover; }
+
+    .hobby-card .hobby-label {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 12px;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: center;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    }
+
+    /* ---------- MARQUEE ---------- */
+    .marquee-strip {
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 28px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin: 80px 0 0;
+    }
+
+    .marquee-track {
+      display: inline-block;
+      animation: marquee 25s linear infinite;
+    }
+
+    .marquee-track span {
+      font-family: 'Outfit', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-right: 48px;
+      color: rgba(255,255,255,0.06);
+    }
+
+    .marquee-track span em {
+      font-style: italic;
+      color: rgba(91,106,191,0.2);
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ---------- CONTACT ---------- */
+    #contact {
+      background: var(--card);
+      color: var(--ink-dark);
+      text-align: center;
+      padding: 100px 48px 60px;
+    }
+
+    #contact h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      letter-spacing: -0.02em;
+    }
+
+    .contact-email {
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 500;
+      margin-bottom: 40px;
+    }
+
+    .contact-email a {
+      color: var(--accent);
+      text-decoration: none;
+      position: relative;
+    }
+
+    .contact-email a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -4px;
+      width: 100%; height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .contact-email a:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .social-links a {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-dark);
+      text-decoration: none;
+      padding: 12px 28px;
+      border: 2px solid var(--ink-dark);
+      border-radius: 999px;
+      transition: background 0.3s, color 0.2s, transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s;
+    }
+
+    .social-links a:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(91,106,191,0.3);
+    }
+
+    .footer-note {
+      margin-top: 60px;
+      font-size: 13px;
+      color: var(--muted-dark);
+    }
+
+    /* ---------- SCROLL REVEAL SYSTEM ---------- */
+    /* Fade up (default) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* From left */
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    /* From right */
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* Scale up */
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+    /* Stagger children — each card animates in one by one */
+    .stagger-cards > * {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .stagger-cards.visible > *:nth-child(1) { transition-delay: 0.0s; }
+    .stagger-cards.visible > *:nth-child(2) { transition-delay: 0.12s; }
+    .stagger-cards.visible > *:nth-child(3) { transition-delay: 0.24s; }
+    .stagger-cards.visible > *:nth-child(4) { transition-delay: 0.36s; }
+
+    .stagger-cards.visible > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Alternate: odd from left, even from right */
+    .stagger-alt > * {
+      opacity: 0;
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .stagger-alt > *:nth-child(odd) { transform: translateX(-40px); }
+    .stagger-alt > *:nth-child(even) { transform: translateX(40px); }
+
+    .stagger-alt.visible > *:nth-child(1) { transition-delay: 0.0s; }
+    .stagger-alt.visible > *:nth-child(2) { transition-delay: 0.12s; }
+    .stagger-alt.visible > *:nth-child(3) { transition-delay: 0.24s; }
+    .stagger-alt.visible > *:nth-child(4) { transition-delay: 0.36s; }
+
+    .stagger-alt.visible > * {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ---------- SECTION TRANSITIONS ---------- */
+    .section-transition {
+      height: 100px;
+      margin-top: -50px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .section-transition.light-to-dark {
+      background: linear-gradient(to bottom, var(--bg-light), var(--bg-dark));
+    }
+
+    .section-transition.dark-to-light {
+      background: linear-gradient(to bottom, var(--bg-dark), var(--card));
+    }
+
+    /* ---------- MOBILE ---------- */
+    @media (max-width: 768px) {
+      .section-pad { padding: 60px 24px; }
+      .hero-top { flex-direction: column; align-items: flex-start; }
+      .project-grid,
+      .project-grid-dark { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-strip { grid-template-columns: 1fr; }
+      .about-strip-img { min-height: 200px; }
+      .hobbies-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .nav-bar a { padding: 8px 16px; font-size: 12px; }
+      #contact { padding: 60px 24px 40px; }
+      .marquee-track span { font-size: 32px; margin-right: 32px; }
+      .section-transition { height: 60px; margin-top: -30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ============================== -->
+  <!-- NAV                            -->
+  <!-- ============================== -->
+  <nav>
+    <div class="nav-bar">
+      <a href="#home" class="active">Home</a>
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- ============================== -->
+  <!-- HOME                           -->
+  <!-- ============================== -->
+  <section id="home">
+    <div class="floater floater-1" data-speed="0.03"></div>
+    <div class="floater floater-2" data-speed="0.05"></div>
+
+    <div class="section-pad">
+      <div class="hero-top">
+        <!-- ★ EDIT: Replace with your image -->
+        <div class="hero-photo">
+          <img src="isabel-headshot.jpg" alt="Isabel">
+        </div>
+
+        <div class="hero-text">
+          <!-- ★ EDIT: Your name — letters animate in one by one -->
+          <h1>
+            <span class="char" style="animation-delay:0.1s">H</span><span class="char" style="animation-delay:0.14s">i</span><span class="char" style="animation-delay:0.18s">,</span>&nbsp;
+            <span class="char" style="animation-delay:0.26s">I</span><span class="char" style="animation-delay:0.3s">'</span><span class="char" style="animation-delay:0.34s">m</span>&nbsp;
+            <span class="char" style="animation-delay:0.42s">I</span><span class="char" style="animation-delay:0.46s">s</span><span class="char" style="animation-delay:0.5s">a</span><span class="char" style="animation-delay:0.54s">b</span><span class="char" style="animation-delay:0.58s">e</span><span class="char" style="animation-delay:0.62s">l</span>
+            <div class="line-2">
+              <span class="char" style="animation-delay:0.7s">I</span>&nbsp;
+              <span class="char" style="animation-delay:0.78s">D</span><span class="char" style="animation-delay:0.82s">e</span><span class="char" style="animation-delay:0.86s">s</span><span class="char" style="animation-delay:0.9s">i</span><span class="char" style="animation-delay:0.94s">g</span><span class="char" style="animation-delay:0.98s">n</span>&nbsp;
+              <span class="char" style="animation-delay:1.06s">S</span><span class="char" style="animation-delay:1.1s">t</span><span class="char" style="animation-delay:1.14s">u</span><span class="char" style="animation-delay:1.18s">f</span><span class="char" style="animation-delay:1.22s">f</span>
+            </div>
+          </h1>
+        </div>
+      </div>
+
+      <!-- ★ EDIT: Your specialties -->
+      <p class="specialties reveal">UX/UI Designer & Design Mentor — specializing in UX, branding, graphics, and social media.</p>
+
+      <div class="scroll-arrow">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </div>
+
+      <!-- Recent projects — cards stagger in -->
+      <div class="recent-projects reveal">
+        <h2>Recent Projects</h2>
+        <!-- ★ EDIT: Replace placeholder text/images -->
+        <!-- ★ EDIT: Update the href on each <a> to match your case study filenames -->
+        <div class="project-grid stagger-cards">
+          <a href="case-study-1.html" class="card-link">
+            <div class="project-card">
+              <img src="ss-hero.png" alt="Scroll Spike app mockup">
+              <div class="overlay"><h3>Scroll Spike</h3><p>Featured case study</p></div>
+            </div>
+          </a>
+          <a href="case-study-2.html" class="card-link">
+            <div class="project-card">
+              <img src="ga-landing.png" alt="GA Repository landing page">
+              <div class="overlay"><h3>GA Repository</h3><p>Case study</p></div>
+            </div>
+          </a>
+          <a href="case-study-3.html" class="card-link">
+            <div class="project-card">
+              <img src="wdi-home.jpg" alt="What Dat Is home screen">
+              <div class="overlay"><h3>What Dat Is?</h3><p>Case study</p></div>
+            </div>
+          </a>
+          <a href="case-study-4.html" class="card-link">
+            <div class="project-card">
+              <img src="ft-hero.png" alt="FourthTri app mockup">
+              <div class="overlay"><h3>FourthTri</h3><p>Case study</p></div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- About strip -->
+      <!-- ★ EDIT: Add your image and greeting -->
+      <div class="about-strip reveal-scale">
+        <div class="about-strip-img">
+          <img src="isabel-beach.png" alt="Isabel at the beach">
+        </div>
+        <div class="about-strip-text">
+          I'm Isabel — a UX/UI designer and design mentor based in Detroit, turning ideas into seamless digital experiences. Check out my projects, connect with me on socials, or reach out — let's create something great.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-transition light-to-dark"></div>
+
+  <!-- ============================== -->
+  <!-- PROJECTS (dark)                -->
+  <!-- ============================== -->
+  <section id="projects">
+    <div class="floater floater-1" data-speed="0.04"></div>
+
+    <div class="section-pad">
+      <div class="page-title reveal-left">My Work <span class="accent-pill"></span></div>
+
+      <!-- ★ EDIT: Intro text -->
+      <p class="projects-intro reveal">A collection of all my recent projects, each showcasing different aspects of my design process — from initial research and ideation to final execution.</p>
+
+      <!-- Featured — Scroll Spike -->
+      <a href="case-study-1.html" class="card-link">
+        <div class="featured-card reveal-scale">
+          <img src="ss-hero.png" alt="Scroll Spike app mockup" style="width:100%;height:100%;object-fit:cover;">
+          <div class="overlay"><h3>Scroll Spike</h3><p>Featured case study</p></div>
+        </div>
+      </a>
+      <div class="project-meta reveal">
+        <h3>Scroll Spike</h3>
+        <p>Featured project</p>
+      </div>
+
+      <!-- 2x2 — cards alternate from left/right -->
+      <div class="project-grid-dark stagger-alt">
+        <div>
+          <a href="case-study-2.html" class="card-link">
+            <div class="project-card-dark">
+              <img src="ga-landing.png" alt="GA Repository" style="width:100%;height:100%;object-fit:cover;">
+              <div class="overlay"><h3>GA Repository</h3><p>Case study</p></div>
+            </div>
+          </a>
+          <div class="project-meta" style="margin-top:16px;"><h3>GA Repository</h3><p>Case study</p></div>
+        </div>
+        <div>
+          <a href="case-study-3.html" class="card-link">
+            <div class="project-card-dark">
+              <img src="wdi-home.jpg" alt="What Dat Is?" style="width:100%;height:100%;object-fit:cover;">
+              <div class="overlay"><h3>What Dat Is?</h3><p>Case study</p></div>
+            </div>
+          </a>
+          <div class="project-meta" style="margin-top:16px;"><h3>What Dat Is?</h3><p>Case study</p></div>
+        </div>
+        <div>
+          <a href="case-study-4.html" class="card-link">
+            <div class="project-card-dark">
+              <img src="ft-hero.png" alt="FourthTri" style="width:100%;height:100%;object-fit:cover;">
+              <div class="overlay"><h3>FourthTri</h3><p>Case study</p></div>
+            </div>
+          </a>
+          <div class="project-meta" style="margin-top:16px;"><h3>FourthTri</h3><p>Case study</p></div>
+        </div>
+        <div>
+          <a href="case-study-5.html" class="card-link">
+            <div class="project-card-dark">
+              <img src="sq-hero.png" alt="Sales Qube" style="width:100%;height:100%;object-fit:cover;">
+              <div class="overlay"><h3>Sales Qube</h3><p>Case study</p></div>
+            </div>
+          </a>
+          <div class="project-meta" style="margin-top:16px;"><h3>Sales Qube</h3><p>Case study</p></div>
+        </div>
+      </div>
+
+      <!-- Marquee -->
+      <div class="marquee-strip">
+        <div class="marquee-track">
+          <span>UX Design</span><span><em>Branding</em></span><span>Typography</span><span><em>Graphics</em></span><span>Social Media</span><span><em>Identity</em></span>
+          <span>UX Design</span><span><em>Branding</em></span><span>Typography</span><span><em>Graphics</em></span><span>Social Media</span><span><em>Identity</em></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- ABOUT (dark)                   -->
+  <!-- ============================== -->
+  <section id="about">
+    <div class="floater floater-1" data-speed="0.04"></div>
+
+    <div class="section-pad">
+      <div class="page-title reveal-left">About Me <span class="accent-pill"></span></div>
+
+      <div class="about-grid">
+        <p class="about-desc reveal-left">I'm Isabel, a UX designer based in Detroit, passionate about crafting seamless digital experiences. I thrive on transforming ideas into captivating designs. Beyond the world of pixels, I enjoy connecting with friends, exploring new design concepts, and engaging in collaborative endeavors that push boundaries.</p>
+
+        <!-- ★ EDIT: Your image -->
+        <div class="about-photo reveal-right">
+          <img src="isabel-headshot.jpg" alt="Isabel">
+        </div>
+      </div>
+
+      <div class="hobbies reveal">
+        <h3>What I Do When I'm Not Designing</h3>
+        <!-- ★ EDIT: Hobby images -->
+        <div class="hobbies-grid stagger-cards">
+          <div class="hobby-card">
+            <img src="isabel-traveling.jpg" alt="Isabel hiking on a mountain">
+            <div class="hobby-label">Traveling</div>
+          </div>
+          <div class="hobby-card">
+            <img src="isabel-mentoring.jpg" alt="Isabel with the Apple Developer Academy team">
+            <div class="hobby-label">Mentoring</div>
+          </div>
+          <div class="hobby-card">
+            <img src="isabel-snowboarding.jpg" alt="Isabel in snowboarding gear">
+            <div class="hobby-label">Snowboarding</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-transition dark-to-light"></div>
+
+  <!-- ============================== -->
+  <!-- CONTACT                        -->
+  <!-- ============================== -->
+  <section id="contact">
+    <div class="reveal">
+      <h2>Thanks For Coming By</h2>
+      <!-- ★ EDIT: Your email -->
+      <div class="contact-email">
+        <a href="mailto:isabel@example.com">isabel@example.com</a>
+      </div>
+      <!-- ★ EDIT: Your social links -->
+      <div class="social-links">
+        <a href="#">LinkedIn</a>
+        <a href="#">Instagram</a>
+        <a href="#">Behance</a>
+        <a href="#">GitHub</a>
+      </div>
+      <p class="footer-note">© 2026 Isabel — Designed & built with care.</p>
+    </div>
+  </section>
+
+  <script>
+    // ========== CURSOR + TRAIL ==========
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+    const TRAIL_COUNT = 8;
+    const trails = [];
+    for (let i = 0; i < TRAIL_COUNT; i++) {
+      const t = document.createElement('div');
+      t.classList.add('cursor-trail');
+      document.body.appendChild(t);
+      trails.push({ el: t, x: 0, y: 0 });
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = mouseX + 'px';
+      dot.style.top = mouseY + 'px';
+    });
+
+    function animateCursor() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+
+      let prevX = mouseX, prevY = mouseY;
+      trails.forEach((t, i) => {
+        const speed = 0.25 - (i * 0.025);
+        t.x += (prevX - t.x) * speed;
+        t.y += (prevY - t.y) * speed;
+        t.el.style.left = t.x + 'px';
+        t.el.style.top = t.y + 'px';
+        t.el.style.opacity = (1 - i / TRAIL_COUNT) * 0.35;
+        t.el.style.width = t.el.style.height = (6 - i * 0.5) + 'px';
+        prevX = t.x;
+        prevY = t.y;
+      });
+
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    document.querySelectorAll('a, button, .project-card, .project-card-dark, .featured-card, .hobby-card, .about-strip, .about-photo, .hero-photo').forEach(el => {
+      el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
+      el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
+    });
+
+    // ========== PARALLAX FLOATERS ==========
+    const floaters = document.querySelectorAll('.floater');
+    let scrollY = 0, ticking = false;
+
+    window.addEventListener('scroll', () => {
+      scrollY = window.pageYOffset;
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          floaters.forEach(f => {
+            const speed = parseFloat(f.dataset.speed) || 0.03;
+            const section = f.parentElement;
+            const offset = section.offsetTop;
+            const move = (scrollY - offset) * speed;
+            f.style.transform = `translateY(${move}px)`;
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // ========== SCROLL REVEAL ==========
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .stagger-cards, .stagger-alt').forEach(el => obs.observe(el));
+
+    // ========== ACTIVE NAV ==========
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-bar a');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 200) current = s.id;
+      });
+      navLinks.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
