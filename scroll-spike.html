@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scroll Spike — Isabel Sufficool</title>
+<meta name="description" content="Tracking heart rate during screen time to make the physical cost of doomscrolling visible in the moment it's happening.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<script>document.documentElement.classList.add("js");</script>
+</head>
+<body class="cs" data-project="ss">
+
+<a class="skip" href="#overview">Skip to content</a>
+
+<header class="masthead">
+  <a class="masthead__name" href="index.html">Isabel Sufficool</a>
+  <nav class="masthead__nav" aria-label="Primary">
+    <a class="link-wipe" href="index.html">Work</a>
+    <a class="link-wipe" href="about.html">About</a>
+    <a class="link-wipe" href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="cs-hero">
+  <div class="cs-hero__inner">
+    <p class="eyebrow reveal" style="color: inherit; opacity: 0.6;">01 — Health &amp; behavior</p>
+    <h1 class="cs-hero__title reveal" data-d="1">Scroll Spike</h1>
+    <p class="cs-hero__blurb reveal" data-d="2">
+      Tracks your heart rate during screen time to reveal, in real time, what your
+      phone use is doing to your body — helping Gen Z break the doomscrolling cycle.
+    </p>
+    <figure class="cs-hero__shot reveal" data-d="3">
+      <img src="assets/ss-preview.png" alt="Three Scroll Spike screens: goal selection with the Spike mascot, the heart rate dashboard, and streak tracking." width="1080" height="1080">
+    </figure>
+  </div>
+</section>
+
+<!-- ========== META ========== -->
+<dl class="cs-meta" id="overview">
+  <div class="reveal"><dt>Role</dt><dd>Designer</dd></div>
+  <div class="reveal" data-d="1"><dt>Timeline</dt><dd>10 weeks</dd></div>
+  <div class="reveal" data-d="2"><dt>Tools</dt><dd>Figma, Adobe Illustrator, Canva</dd></div>
+  <div class="reveal" data-d="3"><dt>Focus</dt><dd>Behavior change, notification design</dd></div>
+</dl>
+
+<!-- ========== PHASE NAV ========== -->
+<nav class="phase-nav" aria-label="Case study sections">
+  <div class="phase-nav__inner">
+    <a href="#research">Research</a>
+    <a href="#problem">Problem</a>
+    <a href="#ideation">Ideation</a>
+    <a href="#design">Design</a>
+    <a href="#testing">Testing</a>
+    <a href="#outcome">Outcome</a>
+  </div>
+</nav>
+
+<!-- ========== RESEARCH ========== -->
+<section class="phase" id="research">
+  <div class="phase__head reveal">
+    <span class="phase__num">01</span>
+    <h2 class="phase__title">Research</h2>
+  </div>
+  <div class="phase__body reveal" data-d="1">
+    <p>
+      I started by mapping what doomscrolling actually does, and the findings
+      sorted themselves into four groups: mental health, physical health, the
+      body's stress response, and existing solutions.
+    </p>
+    <p>
+      The physical column was the one that changed the project.
+      <strong>Excessive social media time raises cortisol and adrenaline;
+      repeated doomscrolling keeps those stress hormones cycling, leading to
+      fatigue, elevated blood pressure, and over time a measurably weakened
+      immune system.</strong> This wasn't a mood problem with physical side
+      effects. It was a physiological event happening in the body, in real time,
+      while the user felt nothing unusual at all.
+    </p>
+    <p>
+      Meanwhile the solutions column was thin — and everything in it amounted to
+      the same idea: track your time, or turn off notifications. Nothing
+      connected the behavior to the body.
+    </p>
+  </div>
+
+  <figure class="figure figure--frame reveal" data-d="2">
+    <img src="assets/ss-research.png" alt="Affinity map with four columns: Mental Health, Physical Health, Stress Response, and Solutions, each filled with sticky notes." loading="lazy" width="2071" height="1380">
+    <figcaption>
+      Affinity map from secondary research. The gap between the first three
+      columns and the fourth is the product.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ========== PROBLEM ========== -->
+<section class="phase" id="problem">
+  <div class="phase__head reveal">
+    <span class="phase__num">02</span>
+    <h2 class="phase__title">Problem</h2>
+  </div>
+  <div class="phase__body reveal" data-d="1">
+    <p>
+      Doomscrolling is a health crisis hiding in plain sight. Millions of people,
+      especially Generation Z, spend hours a day scrolling without registering
+      what it's taking from them mentally, physically, or emotionally.
+    </p>
+    <p>
+      Existing screen time tools report usage <strong>after the fact</strong> —
+      a weekly summary, delivered long after the behavior, with no link between
+      the scrolling and its effect on your body. So users dismiss them. The
+      notifications read as nagging and irrelevant, because that's exactly what
+      they are: a number you didn't ask for about a week you can't change.
+    </p>
+  </div>
+
+  <p class="statement statement--accent reveal" data-d="2">
+    The damage is already measurable. It's just invisible. Make it visible and
+    the argument makes itself.
+  </p>
+
+  <div class="phase__body reveal" data-d="3">
+    <p>
+      That reframe set the whole design brief. Not "help people use their phones
+      less" — <strong>"show people what their phone is doing to them while it's
+      still doing it."</strong>
+    </p>
+  </div>
+
+  <figure class="figure figure--frame reveal" data-d="3">
+    <img src="assets/ss-doomscrolling.png" alt="Scroll Spike in-app explainer card titled What is Doomscrolling with the Spike mascot." loading="lazy" width="1080" height="1080">
+    <figcaption>
+      Education lives inside the app, not in an onboarding wall — surfaced next to
+      the data it explains.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ========== IDEATION ========== -->
+<section class="phase" id="ideation">
+  <div class="phase__head reveal">
+    <span class="phase__num">03</span>
+    <h2 class="phase__title">Ideation</h2>
+  </div>
+  <div class="phase__body reveal" data-d="1">
+    <p>
+      There were no external constraints on this project, which meant the hardest
+      part was restraint. Early sketches tried to show everything at once —
+      screen time, heart rate, blood oxygen, app breakdowns, stats on stats.
+    </p>
+    <p>
+      Annotating my own wireframes is where it got cut down. The notes I kept
+      writing to myself were all versions of the same instruction:
+      <strong>bigger numbers, fewer of them.</strong> A dashboard someone glances
+      at while already distracted can carry one idea, not six.
+    </p>
+  </div>
+
+  <figure class="figure figure--frame reveal" data-d="2">
+    <img src="assets/ss-wireframes.png" alt="Hand-drawn lo-fi wireframes of the Scroll Spike home screen with red annotations calling for bigger stats and simpler layout." loading="lazy" width="1240" height="933">
+    <figcaption>
+      Lo-fi wireframes with in-progress annotations. Each red note is a decision
+      to remove something.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ========== DESIGN ========== -->
+<section class="phase" id="design">
+  <div class="phase__head reveal">
+    <span class="phase__num">04</span>
+    <h2 class="phase__title">Design decisions</h2>
+  </div>
+
+  <div class="decision reveal">
+    <span class="decision__num">1</span>
+    <div>
+      <h3 class="decision__title">Notifications that are urgent without being judgmental</h3>
+      <p class="decision__body">
+        This is the core bet of the product. Apple's Screen Time notification
+        reports a statistic about your past. Scroll Spike's reports an
+        irregularity in your body, right now: <em>"We've noticed 5 irregularities
+        in your heart rate over the last 50 minutes on Instagram."</em> No
+        opinion, no scolding, no implied failure — just a fact about you that you
+        didn't have a second ago. The urgency comes from the information being
+        about your heart, not from the tone.
+      </p>
+    </div>
+  </div>
+
+  <div class="decision reveal">
+    <span class="decision__num">2</span>
+    <div>
+      <h3 class="decision__title">A mascot as the metaphor for heart health</h3>
+      <p class="decision__body">
+        Spike carries the emotional weight so the copy doesn't have to. A heart
+        with a face can look concerned in a way a sentence can't without sounding
+        preachy — and it gives the app a consistent presence across notifications
+        and widgets, so the reminder feels like a character checking in rather
+        than a system issuing a warning. It also solved a real tension from
+        testing: how to make someone take a heart-rate spike seriously without
+        frightening them about their health.
+      </p>
+    </div>
+  </div>
+
+  <div class="decision reveal">
+    <span class="decision__num">3</span>
+    <div>
+      <h3 class="decision__title">One number, then the detail</h3>
+      <p class="decision__body">
+        The dashboard opens on a single figure — heart rate spikes today — plotted
+        against your resting range so the deviation is the shape you see first.
+        Everything else sits below it. Today / Week / Month is one tap, not a
+        separate screen, because the question "is this normal for me?" needs an
+        immediate answer to be worth anything.
+      </p>
+    </div>
+  </div>
+
+  <div class="screens">
+    <figure class="screen reveal">
+      <img src="assets/ss-home.png" alt="Scroll Spike dark home screen showing heart rate spikes chart, a doomscrolling explainer, and a two day streak." loading="lazy" width="1080" height="1080">
+      <figcaption>Home — one number first, detail underneath.</figcaption>
+    </figure>
+    <figure class="screen reveal" data-d="1">
+      <img src="assets/ss-onboarding-1.png" alt="Scroll Spike onboarding screen introducing the app." loading="lazy" width="828" height="1792">
+      <figcaption>Onboarding — sets expectations before asking for health permissions.</figcaption>
+    </figure>
+    <figure class="screen reveal" data-d="2">
+      <img src="assets/ss-spike-mascot.png" alt="Spike, the Scroll Spike mascot: a red heart character with arms, legs and expressive eyes." loading="lazy" width="1080" height="1080">
+      <figcaption>Spike — the metaphor that lets the app be serious without being grim.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ========== TESTING ========== -->
+<section class="phase" id="testing">
+  <div class="phase__head reveal">
+    <span class="phase__num">05</span>
+    <h2 class="phase__title">Testing</h2>
+  </div>
+  <div class="phase__body reveal" data-d="1">
+    <p>
+      The central question was whether the notification premise actually worked,
+      so I tested it directly: I showed users Apple's Screen Time notification
+      and Scroll Spike's heart rate notification, and recorded their reactions to
+      each.
+    </p>
+    <p>
+      <strong>The split was total.</strong> The Screen Time notification produced
+      "don't really care much," "feels judgmental," "disregarded and swiped away."
+      The heart rate notification produced "intriguing," "feels more urgent," "I
+      would click to check my heart rate." Same person, same session, opposite
+      response.
+    </p>
+  </div>
+
+  <figure class="figure figure--frame reveal" data-d="2">
+    <img src="assets/ss-notif-testing.png" alt="Notification effectiveness comparison: Apple Screen Time reactions on the left in teal, Scroll Spike heart rate reactions on the right in blue." loading="lazy" width="1024" height="768">
+    <figcaption>
+      Notification effectiveness testing. Left: Apple Screen Time. Right: Scroll
+      Spike. The verbatim reactions did more to validate the concept than any
+      other artifact in the project.
+    </figcaption>
+  </figure>
+
+  <div class="phase__body reveal" style="margin-top: clamp(2rem, 5vh, 3.5rem);">
+    <p>
+      The wider feedback session surfaced two changes that shaped the final build.
+    </p>
+  </div>
+
+  <div class="decision reveal">
+    <span class="decision__num">+</span>
+    <div>
+      <h3 class="decision__title">Goals set during onboarding</h3>
+      <p class="decision__body">
+        Users wanted to define what "too much" meant for them rather than be
+        handed a threshold. Onboarding now asks you to pick a goal — Casual,
+        Normal, Intense, Extreme — so every later notification is measured against
+        a line you drew yourself. It's much harder to dismiss a limit you set.
+      </p>
+    </div>
+  </div>
+
+  <div class="decision reveal">
+    <span class="decision__num">+</span>
+    <div>
+      <h3 class="decision__title">Streaks, because accountability beat information</h3>
+      <p class="decision__body">
+        Testers were more interested in streaks than I expected. The insight:
+        if they could hold <em>themselves</em> accountable through gamification,
+        they were more likely to keep their phone time down. Knowing the damage
+        got their attention; a streak they didn't want to break is what actually
+        changed the behavior. Feedback put it bluntly — "streaks release dopamine."
+      </p>
+    </div>
+  </div>
+
+  <figure class="figure figure--frame reveal">
+    <img src="assets/ss-feedback.png" alt="User feedback board with notes about mascots, streaks releasing dopamine, notification tone of voice, and making spikes concerning without being scary." loading="lazy" width="1920" height="1080">
+    <figcaption>
+      Feedback board. "Love mascots. Streaks release dopamine. Consider
+      metaphorical mascots." — two design decisions confirmed on one sticky note.
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ========== OUTCOME ========== -->
+<section class="phase" id="outcome">
+  <div class="phase__head reveal">
+    <span class="phase__num">06</span>
+    <h2 class="phase__title">Outcome</h2>
+  </div>
+  <div class="phase__body reveal" data-d="1">
+    <p>
+      The premise held up. Users who had spent years ignoring screen time
+      notifications responded to the same behavior reframed as a body signal —
+      and said so in their own words.
+    </p>
+  </div>
+
+  <div class="quotes">
+    <blockquote class="quote reveal">
+      <p>"Made me reconsider what I'm scrolling for. I would actually click to check my heart rate."</p>
+      <cite>User testing participant</cite>
+    </blockquote>
+    <blockquote class="quote reveal" data-d="1">
+      <p>"The Screen Time one I'd just swipe away. This one actually made me reflect."</p>
+      <cite>User testing participant</cite>
+    </blockquote>
+    <blockquote class="quote reveal" data-d="2">
+      <p>"It feels more important and urgent — not judgmental, but like it actually matters."</p>
+      <cite>User testing participant</cite>
+    </blockquote>
+  </div>
+
+  <div class="phase__body reveal" style="margin-top: clamp(2rem, 5vh, 3rem);">
+    <p>
+      <strong>What I'd take further:</strong> the feedback board asked for a watch
+      complication and customisable haptics — both of which would move the
+      intervention closer to the moment it's describing. A spike you feel on your
+      wrist is a different argument than a spike you read about on the screen
+      you're already stuck to.
+    </p>
+  </div>
+</section>
+
+<!-- ========== NEXT ========== -->
+<section class="next">
+  <div class="next__inner">
+    <p class="next__label reveal">Next project</p>
+    <a class="next__title link-wipe reveal" data-d="1" href="door-greeters.html">Door Greeters →</a>
+  </div>
+</section>
+
+<footer class="footer" id="contact">
+  <div class="footer__inner">
+    <p class="eyebrow reveal">Contact</p>
+    <h2 class="footer__title reveal" data-d="1">Say hello.</h2>
+    <a class="footer__mail link-wipe reveal" data-d="2" href="mailto:isabelsufficool22@gmail.com">isabelsufficool22@gmail.com</a>
+    <div class="footer__links reveal" data-d="3">
+      <a class="link-wipe" href="http://www.linkedin.com/in/isabelsufficool" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="link-wipe" href="assets/Isabel-Sufficool-Resume.pdf" target="_blank" rel="noopener">Résumé ↗</a>
+      <a class="link-wipe" href="index.html">Work</a>
+    </div>
+    <div class="footer__base">
+      <span>Isabel Sufficool — Product Designer, Detroit</span>
+      <span>© 2026</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>
