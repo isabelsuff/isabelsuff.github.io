@@ -206,14 +206,32 @@
     nums.forEach(function (n) { io.observe(n); });
   }
 
-  /* ---------- boot ---------- */
-  function boot() {
-    initReveals();
-    initGallery();
-    initCursor();
-    initPhaseNav();
-    initCounters();
+  /* ---------- boot ----------
+     Each init is isolated: one failure must not leave the page blank,
+     since `html.js .reveal` keeps content hidden until JS un-hides it. */
+  function revealEverything() {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
   }
+
+  function boot() {
+    var steps = [initReveals, initGallery, initCursor, initPhaseNav, initCounters];
+    for (var i = 0; i < steps.length; i++) {
+      try { steps[i](); }
+      catch (err) {
+        if (window.console) console.error('site.js: ' + steps[i].name + ' failed', err);
+        if (steps[i] === initReveals) revealEverything();
+      }
+    }
+  }
+  // last resort: if nothing has revealed shortly after load, the observer
+  // never ran — show everything rather than leave the page blank
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      if (document.querySelector('.reveal') && !document.querySelector('.reveal.in')) {
+        revealEverything();
+      }
+    }, 600);
+  });
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else { boot(); }

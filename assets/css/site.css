@@ -95,10 +95,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    Only hidden when JS is present to un-hide it, so a script failure
    degrades to plain visible content rather than a blank page. */
 html.js .reveal { opacity: 0; transform: translateY(18px); }
-.reveal.in { opacity: 1; transform: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
-.reveal[data-d="1"].in { transition-delay: 0.08s; }
-.reveal[data-d="2"].in { transition-delay: 0.16s; }
-.reveal[data-d="3"].in { transition-delay: 0.24s; }
+/* must out-specify `html.js .reveal` above, or nothing ever becomes visible */
+html.js .reveal.in { opacity: 1; transform: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+html.js .reveal[data-d="1"].in { transition-delay: 0.08s; }
+html.js .reveal[data-d="2"].in { transition-delay: 0.16s; }
+html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
 
 /* ============================================================
    Custom cursor
