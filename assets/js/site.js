@@ -179,9 +179,9 @@
 
     document.addEventListener('mousemove', function (e) {
       x = e.clientX; y = e.clientY;
+      el.classList.add('is-live');
       if (!queued) { queued = true; window.requestAnimationFrame(place); }
     }, { passive: true });
-    place();
 
     document.querySelectorAll('[data-cursor]').forEach(function (target) {
       target.addEventListener('mouseenter', function () {
@@ -222,7 +222,10 @@
     var nums = document.querySelectorAll('[data-count]');
     if (!nums.length) return;
     if (reduced || !('IntersectionObserver' in window)) {
-      nums.forEach(function (n) { n.textContent = n.getAttribute('data-count'); });
+      nums.forEach(function (n) {
+        // keep the suffix — the animated path appends it, this one must too
+        n.textContent = n.getAttribute('data-count') + (n.getAttribute('data-suffix') || '');
+      });
       return;
     }
     var io = new IntersectionObserver(function (entries) {

@@ -45,8 +45,8 @@
 }
 
 /* project themes */
-[data-project="ss"] { --accent: #E8503A; --accent-ink: #FFF; --panel: #17181C; --panel-ink: #F2F0EC; }
-[data-project="dg"] { --accent: #7E8DF7; --accent-ink: #0E0F14; --panel: #0E0F14; --panel-ink: #EDEFF7; }
+[data-project="ss"] { --accent: #E8503A; --accent-ink: #FFF; --panel: #17181C; --panel-ink: #F2F0EC; --screen-bg: #17181C; }
+[data-project="dg"] { --accent: #7E8DF7; --accent-ink: #0E0F14; --panel: #0E0F14; --panel-ink: #EDEFF7; --screen-bg: #0E0F14; }
 [data-project="wdi"]{ --accent: #6D72C9; --accent-ink: #FFF; --panel: #8085D6; --panel-ink: #FFF; }
 [data-project="ft"] { --accent: #C2426B; --accent-ink: #FFF; --panel: #FDE4D8; --panel-ink: #4A1226; }
 [data-project="sq"] { --accent: #1E3A8A; --accent-ink: #FFF; --panel: #A9C3F0; --panel-ink: #10214F; }
@@ -117,6 +117,10 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
   display: none;
 }
 .cursor.is-lg { width: 84px; height: 84px; }
+/* hidden until the pointer actually moves, so it does not sit
+   parked in the middle of the viewport on load */
+.cursor { opacity: 0; }
+.cursor.is-live { opacity: 1; transition: opacity 0.2s var(--ease), width 0.3s var(--ease), height 0.3s var(--ease); }
 .cursor__label {
   position: absolute; inset: 0;
   display: grid; place-items: center;
@@ -340,25 +344,28 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
   opacity: 0.85;
 }
 /* lead row: blurb left, small teaser image right, so the sections
-   below the hero are visible without scrolling */
+   below the hero are visible without scrolling.
+   The image column is an explicit width, never `auto`: an auto track
+   sizes to the image's intrinsic width (1080px+) and crushes the text
+   column down to one word per line. */
 .cs-hero__lead {
+  --shotw: 230px;
   margin-top: clamp(1.25rem, 3vh, 2rem);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) var(--shotw);
   gap: clamp(1.5rem, 5vw, 4rem);
   align-items: end;
 }
+.cs-hero__lead--wide { --shotw: 380px; }
+.cs-hero__lead--tall { --shotw: 150px; }
 .cs-hero__copy { min-width: 0; }
 .cs-hero__copy .cs-hero__blurb { margin-top: 0; }
 .cs-hero__shot {
-  width: min(100%, 230px);
+  width: 100%;
   border-radius: var(--radius);
   overflow: hidden;
   margin: 0;
 }
-.cs-hero__shot--wide { width: min(100%, 380px); }
-/* portrait teaser: cap height rather than width so it stays compact */
-.cs-hero__shot--tall { width: min(100%, 150px); }
 @media (max-width: 720px) {
   .cs-hero__lead { grid-template-columns: 1fr; justify-items: start; }
   .cs-hero__shot { width: min(100%, 200px); }
@@ -381,7 +388,9 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
   position: absolute; inset: 5px;
   border-radius: 21px;
   overflow: hidden;
-  background: #000;
+  /* white, not black: some screenshots (ft-home, ft-progress) carry an
+     alpha channel, and a black backing showed through as dark patches */
+  background: var(--screen-bg, #fff);
 }
 .device__screen img {
   width: 100%; height: 100%;
@@ -642,6 +651,23 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
   display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; justify-content: space-between;
   font-size: var(--step--1); opacity: 0.6;
 }
+
+/* ============================================================
+   Narrow screens: the display sizes overflow 420px and widen the
+   document, which clipped the tag rows too. Cap them here.
+   ============================================================ */
+@media (max-width: 560px) {
+  .intro__title,
+  .cs-hero__title,
+  .about-hero__title,
+  .footer__title,
+  .next__title { font-size: clamp(2.1rem, 9.5vw, 3.4rem); }
+  .card__title { font-size: clamp(1.9rem, 8.5vw, 3rem); }
+  .phase__title { font-size: clamp(1.6rem, 7vw, 2.4rem); }
+}
+/* nothing should ever push the page sideways */
+h1, h2, h3, .card__title, .cs-hero__title { overflow-wrap: break-word; }
+body { overflow-x: hidden; }
 
 /* ============================================================
    Reduced motion
