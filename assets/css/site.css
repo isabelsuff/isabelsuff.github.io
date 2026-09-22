@@ -64,7 +64,10 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
-img { max-width: 100%; display: block; }
+/* height:auto is required — every img carries width/height attributes, and
+   without it max-width shrinks the width while the height attribute holds,
+   stretching every image on the site. */
+img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; }
 h1, h2, h3, h4 { margin: 0; font-weight: 500; line-height: 1.08; letter-spacing: -0.02em; }
 p { margin: 0; }
