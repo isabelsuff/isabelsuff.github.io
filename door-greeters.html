@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Door Greeters — Isabel Sufficool</title>
-<meta name="description" content="Shift sign-up for mentors at the Apple Developer Academy. Replacing buggy software and a single point of human failure with a tool that fills the schedule on its own.">
+<meta name="viewport" content="width=device width, initial scale=1, viewport fit=cover">
+<title>Door Greeters · Isabel Sufficool</title>
+<meta name="description" content="Shift sign up for mentors at the Apple Developer Academy. Replacing buggy software and a single point of human failure with a tool that fills the schedule on its own.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -27,23 +27,27 @@
 <!-- ========== HERO ========== -->
 <section class="cs-hero">
   <div class="cs-hero__inner">
-    <p class="eyebrow reveal" style="color: inherit; opacity: 0.6;">02 — Internal tool</p>
+    <p class="eyebrow reveal" style="color: inherit; opacity: 0.6;">02 · Internal tool</p>
     <h1 class="cs-hero__title reveal" data-d="1">Door Greeters</h1>
+    <div class="cs-hero__lead">
+    <div class="cs-hero__copy">
     <p class="cs-hero__blurb reveal" data-d="2">
       A quick mobile way for the mentor team at the Apple Developer Academy to
-      sign up for shifts greeting students at the door — replacing software that
+      sign up for shifts greeting students at the door, replacing software that
       lost their answers and a reminder system that was one person's memory.
     </p>
-    <figure class="cs-hero__shot reveal" data-d="3">
-      <img src="assets/dg-preview.png" alt="Five Door Greeters screens: dashboard, multi-select sign-up, confirmation, coverage list, and calendar." width="1760" height="756">
+    </div>
+    <figure class="cs-hero__shot cs-hero__shot--wide reveal" data-d="3">
+      <img src="assets/dg-preview.png" alt="Five Door Greeters screens: dashboard, multi select sign up, confirmation, coverage list, and calendar." width="1760" height="756">
     </figure>
+    </div>
   </div>
 </section>
 
 <!-- ========== META ========== -->
 <dl class="cs-meta" id="overview">
   <div class="reveal"><dt>Role</dt><dd>Designer, Developer, Researcher, Project Manager</dd></div>
-  <div class="reveal" data-d="1"><dt>Timeline</dt><dd>5–7 weeks</dd></div>
+  <div class="reveal" data-d="1"><dt>Timeline</dt><dd>5 to 7 weeks</dd></div>
   <div class="reveal" data-d="2"><dt>Tools</dt><dd>Figma, CloudKit, Claude</dd></div>
   <div class="reveal" data-d="3"><dt>Status</dt><dd>Shipped &amp; in use</dd></div>
 </dl>
@@ -69,23 +73,16 @@
   <div class="phase__body reveal" data-d="1">
     <p>
       I was a mentor on this team, which meant the research started before the
-      project did. I had personally missed shifts. I had watched the sign-up
+      project did. I had personally missed shifts. I had watched the sign up
       sheet fail to save. The people I needed to talk to sat next to me.
     </p>
     <p>
       Rather than recruit participants, I paid attention to the failure as it
       kept happening: <strong>who forgot, when they forgot, and what they were
-      doing at the moment they were supposed to be at the door.</strong> Almost
-      every miss traced back to the same thing — the shift was agreed to days
+      doing at the moment they were supposed to be at the door.</strong> Almost every miss traced back to the same thing: the shift was agreed to days
       earlier and never surfaced again until it was already missed.
     </p>
-  </div>
-
-  <div class="slot reveal" data-d="2">
-    <p class="slot__label">Artifact slot — research</p>
-    <p class="slot__note">Mentor interview notes, the old tool's failure log, or a journey map of a missed shift.</p>
-  </div>
-</section>
+  </div></section>
 
 <!-- ========== PROBLEM ========== -->
 <section class="phase" id="problem">
@@ -96,12 +93,12 @@
   <div class="phase__body reveal" data-d="1">
     <p>
       Academy mentors signed up for door greeting shifts in an outdated piece of
-      software that bugged and <strong>didn't save correctly</strong>. Sign-ups
+      software that bugged and <strong>didn't save correctly</strong>. Sign ups
       disappeared. Mentors who had committed showed up in no record at all.
     </p>
     <p>
       The second failure was quieter and worse. Many mentors forgot about their
-      shifts entirely until someone else reminded them — and that someone was
+      shifts entirely until someone else reminded them, and that someone was
       always the same person, manually looking up the schedule and chasing people
       down. <strong>The whole system ran on one person's memory and goodwill.</strong>
       If they were busy, or out, or simply tired of nagging, the door went
@@ -111,12 +108,12 @@
 
   <p class="statement statement--accent reveal" data-d="2">
     The schedule wasn't broken because people didn't care. It was broken because
-    caring had to be re-performed by one person, every single day.
+    caring had to be repeated by one person, every single day.
   </p>
 
   <div class="phase__body reveal" data-d="3">
     <p>
-      So the design problem wasn't "build a better sign-up form." It was:
+      So the design problem wasn't "build a better sign up form." It was:
       <strong>how do you get a commitment to remind you of itself?</strong> Every
       decision below is an answer to that.
     </p>
@@ -131,24 +128,18 @@
   </div>
   <div class="phase__body reveal" data-d="1">
     <p>
-      There were no external constraints on this project — no brand to match, no
+      There were no external constraints on this project, no brand to match, no
       legacy system to integrate with. The constraint was attention. A mentor
-      opening this app is between other things: walking in, mid-conversation,
+      opening this app is between other things: walking in, mid conversation,
       about to start a session. <strong>Anything that took more than a few
       seconds would lose to whatever else they were doing.</strong>
     </p>
     <p>
       That pushed the concept away from a scheduling tool and toward something
       closer to a glance. One screen that answers "am I on today?" before you've
-      finished looking at it, and a sign-up flow short enough to finish standing up.
+      finished looking at it, and a sign up flow short enough to finish standing up.
     </p>
-  </div>
-
-  <div class="slot reveal" data-d="2">
-    <p class="slot__label">Artifact slot — ideation</p>
-    <p class="slot__note">Early wireframes, flow sketches, or the dashboard layouts that were considered and cut.</p>
-  </div>
-</section>
+  </div></section>
 
 <!-- ========== DESIGN ========== -->
 <section class="phase" id="design">
@@ -166,7 +157,7 @@
         close enough to the shift to be actionable, but far enough out to let
         someone wrap up what they were doing and walk over. Thirty minutes is the
         window where a reminder is still useful instead of just an accusation.
-        Every mentor gets their own — so no one is responsible for anyone else's
+        Every mentor gets their own, so no one is responsible for anyone else's
         memory.
       </p>
     </div>
@@ -177,11 +168,11 @@
     <div>
       <h3 class="decision__title">A dashboard that answers the question immediately</h3>
       <p class="decision__body">
-        The home screen opens on today — your AM and PM slots, whether you're on
+        The home screen opens on today, your AM and PM slots, whether you're on
         them, and what's still open. Below it, your upcoming shifts, each with a
         <em>Release</em> button sitting right there. Dropping a shift is
         deliberately as easy as taking one: if releasing is hard, people don't
-        release, they just don't show up, and an unreleased no-show is worse than
+        release, they just don't show up, and an unreleased no show is worse than
         an empty slot someone else could have filled.
       </p>
     </div>
@@ -192,9 +183,8 @@
     <div>
       <h3 class="decision__title">A calendar that shows the gaps, not just your shifts</h3>
       <p class="decision__body">
-        Most scheduling tools show you your own commitments. This one shows the
-        team's coverage — green for filled, red for needs mentors, a check for
-        days you're on. It turns sign-up from an administrative task into a
+        Most scheduling tools show you your own commitments. This one shows the team's coverage: green for filled, red for needs mentors, a check for
+        days you're on. It turns sign up from an administrative task into a
         visible gap someone can close. You can see the holes in the month, which
         is the whole reason anyone signs up for an extra one.
       </p>
@@ -203,16 +193,16 @@
 
   <div class="screens">
     <figure class="screen reveal">
-      <img src="assets/dg-dashboard.png" alt="Door Greeters dashboard showing today's AM and PM slots, upcoming shifts with Release buttons, and a Sign up button." loading="lazy" width="1320" height="2868">
-      <figcaption>Dashboard — today first, then your upcoming shifts, each releasable in one tap.</figcaption>
+      <div class="device"><div class="device__screen"><img src="assets/dg-dashboard.png" alt="Door Greeters dashboard showing today's AM and PM slots, upcoming shifts with Release buttons, and a Sign up button." loading="lazy" width="1320" height="2868"></div></div>
+      <figcaption>Dashboard: today first, then your upcoming shifts, each releasable in one tap.</figcaption>
     </figure>
     <figure class="screen reveal" data-d="1">
-      <img src="assets/dg-shifts-list.png" alt="All shifts list view showing each day's AM and PM slots with names or Open placeholders." loading="lazy" width="1320" height="2868">
-      <figcaption>Coverage list — who's on, and every open slot shown as a dashed gap.</figcaption>
+      <div class="device"><div class="device__screen"><img src="assets/dg-shifts-list.png" alt="All shifts list view showing each day's AM and PM slots with names or Open placeholders." loading="lazy" width="1320" height="2868"></div></div>
+      <figcaption>Coverage list: who's on, and every open slot shown as a dashed gap.</figcaption>
     </figure>
     <figure class="screen reveal" data-d="2">
-      <img src="assets/dg-shifts-calendar.png" alt="Calendar view for July with days marked red for needs mentors and a check mark on days signed up." loading="lazy" width="1320" height="2868">
-      <figcaption>Calendar — the month's gaps at a glance, colour-coded by coverage.</figcaption>
+      <div class="device"><div class="device__screen"><img src="assets/dg-shifts-calendar.png" alt="Calendar view for July with days marked red for needs mentors and a check mark on days signed up." loading="lazy" width="1320" height="2868"></div></div>
+      <figcaption>Calendar: the month's gaps at a glance, colour coded by coverage.</figcaption>
     </figure>
   </div>
 </section>
@@ -228,8 +218,8 @@
       Testing with mentors produced three additions, and all three came from the
       same root complaint: <strong>the app was accurate but it wasn't
       reassuring.</strong> People finished a task and didn't trust that it had
-      worked — a direct hangover from the old software that silently lost
-      sign-ups.
+      worked, a direct hangover from the old software that silently lost
+      sign ups.
     </p>
   </div>
 
@@ -240,7 +230,7 @@
       <p class="decision__body">
         Added after mentors signed up and immediately went looking for proof.
         "You're signed up for 3 shifts" with the list spelled out, and a release
-        option on each — confirmation and correction in the same moment.
+        option on each, confirmation and correction in the same moment.
       </p>
     </div>
   </div>
@@ -248,7 +238,7 @@
   <div class="decision reveal" data-d="2">
     <span class="decision__num">+</span>
     <div>
-      <h3 class="decision__title">Multi-select sign-up</h3>
+      <h3 class="decision__title">Multi select sign up</h3>
       <p class="decision__body">
         Mentors weren't taking one shift, they were taking their week. Doing that
         one at a time meant repeating the same flow four times. Now you tap
@@ -264,7 +254,7 @@
       <h3 class="decision__title">The calendar view</h3>
       <p class="decision__body">
         The list view answered "what's open this week." Mentors kept asking a
-        different question — "which days still need people" — and scrolling a list
+        different question, "which days still need people", and scrolling a list
         to find out. The calendar was added so that answer fits on one screen.
       </p>
     </div>
@@ -272,12 +262,12 @@
 
   <div class="screens">
     <figure class="screen reveal">
-      <img src="assets/dg-signup-multi.png" alt="Sign up screen with three shifts selected and a tray at the bottom reading Confirm 3 shifts." loading="lazy" width="1320" height="2868">
-      <figcaption>Multi-select — selections collect in a tray, confirmed in one action.</figcaption>
+      <div class="device"><div class="device__screen"><img src="assets/dg-signup-multi.png" alt="Sign up screen with three shifts selected and a tray at the bottom reading Confirm 3 shifts." loading="lazy" width="1320" height="2868"></div></div>
+      <figcaption>Multi select: selections collect in a tray, confirmed in one action.</figcaption>
     </figure>
     <figure class="screen reveal" data-d="1">
-      <img src="assets/dg-confirm.png" alt="Confirmation screen reading You're signed up for 3 shifts with each shift listed and a Release option." loading="lazy" width="1320" height="2868">
-      <figcaption>Confirmation — proof it saved, plus an immediate way to undo.</figcaption>
+      <div class="device"><div class="device__screen"><img src="assets/dg-confirm.png" alt="Confirmation screen reading You're signed up for 3 shifts with each shift listed and a Release option." loading="lazy" width="1320" height="2868"></div></div>
+      <figcaption>Confirmation: proof it saved, plus an immediate way to undo.</figcaption>
     </figure>
   </div>
 </section>
@@ -296,7 +286,7 @@
     </p>
     <p>
       The measure I care about most: <strong>weeks have been filling completely,
-      with no shifts left open</strong> — and nobody is chasing anyone to make
+      with no shifts left open</strong>, and nobody is chasing anyone to make
       that happen. The reminding job that used to belong to one person now belongs
       to the system.
     </p>
@@ -333,11 +323,11 @@
     <a class="footer__mail link-wipe reveal" data-d="2" href="mailto:isabelsufficool22@gmail.com">isabelsufficool22@gmail.com</a>
     <div class="footer__links reveal" data-d="3">
       <a class="link-wipe" href="http://www.linkedin.com/in/isabelsufficool" target="_blank" rel="noopener">LinkedIn ↗</a>
-      <a class="link-wipe" href="assets/Isabel-Sufficool-Resume.pdf" target="_blank" rel="noopener">Résumé ↗</a>
+      <a class="link-wipe" href="assets/Isabel-Sufficool-Resume.pdf" target="_blank" rel="noopener">Resume ↗</a>
       <a class="link-wipe" href="index.html">Work</a>
     </div>
     <div class="footer__base">
-      <span>Isabel Sufficool — Product Designer, Detroit</span>
+      <span>Isabel Sufficool · Product Designer, Detroit</span>
       <span>© 2026</span>
     </div>
   </div>

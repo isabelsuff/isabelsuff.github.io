@@ -33,32 +33,73 @@
     var panels = Array.prototype.slice.call(rail.querySelectorAll('.panel'));
     var fill = document.querySelector('.rail__fill');
     var count = document.querySelector('.rail__count');
+    var shots = rail.querySelectorAll('.card__shot img');
 
-    /* translate vertical wheel into horizontal scroll — but release the
-       wheel back to the page at either end so the footer stays reachable */
+    /* Wheel -> horizontal.
+       Previously this wrote rail.scrollLeft on every wheel event, which
+       fought `scroll-snap-type: mandatory` and made reversing direction
+       stutter. Now the wheel only moves a target and one rAF loop eases
+       toward it, so snapping never competes with the input. */
+    var target = rail.scrollLeft;
+    var animating = false;
+
+    function maxScroll() { return rail.scrollWidth - rail.clientWidth; }
+
+    function ease() {
+      var diff = target - rail.scrollLeft;
+      if (Math.abs(diff) < 0.5) {
+        rail.scrollLeft = target;
+        animating = false;
+        rail.classList.remove('is-gliding');
+        return;
+      }
+      rail.scrollLeft += diff * 0.16;
+      window.requestAnimationFrame(ease);
+    }
+
+    function glide(delta) {
+      target = Math.max(0, Math.min(maxScroll(), target + delta));
+      if (!animating) {
+        animating = true;
+        rail.classList.add('is-gliding');
+        window.requestAnimationFrame(ease);
+      }
+    }
+
     function onWheel(e) {
       if (!horizontal.matches) return;
       // let real horizontal intent (trackpad swipe) pass through natively
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
 
-      var max = rail.scrollWidth - rail.clientWidth;
-      var atEnd = rail.scrollLeft >= max - 2;
+      var atEnd = rail.scrollLeft >= maxScroll() - 2;
       var atStart = rail.scrollLeft <= 2;
-      if ((atEnd && e.deltaY > 0) || (atStart && e.deltaY < 0)) return;
+      if ((atEnd && e.deltaY > 0) || (atStart && e.deltaY < 0)) {
+        animating = false;
+        target = rail.scrollLeft;
+        return; // release the wheel to the page so the footer stays reachable
+      }
 
       e.preventDefault();
-      rail.scrollLeft += e.deltaY;
+      // resync if the user scrolled by other means since the last glide
+      if (!animating) target = rail.scrollLeft;
+      glide(e.deltaY * 1.1);
     }
     rail.addEventListener('wheel', onWheel, { passive: false });
+
+    // a real horizontal swipe scrolls natively; keep our target in step
+    rail.addEventListener('scroll', function () {
+      if (!animating) target = rail.scrollLeft;
+    }, { passive: true });
 
     /* keyboard */
     rail.addEventListener('keydown', function (e) {
       if (!horizontal.matches) return;
       var step = rail.clientWidth * 0.8;
-      if (e.key === 'ArrowRight' || e.key === 'PageDown') { rail.scrollLeft += step; e.preventDefault(); }
-      if (e.key === 'ArrowLeft' || e.key === 'PageUp') { rail.scrollLeft -= step; e.preventDefault(); }
-      if (e.key === 'Home') { rail.scrollLeft = 0; e.preventDefault(); }
-      if (e.key === 'End') { rail.scrollLeft = rail.scrollWidth; e.preventDefault(); }
+      if (!animating) target = rail.scrollLeft;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') { glide(step); e.preventDefault(); }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') { glide(-step); e.preventDefault(); }
+      if (e.key === 'Home') { target = 0; glide(0); e.preventDefault(); }
+      if (e.key === 'End') { target = maxScroll(); glide(0); e.preventDefault(); }
     });
 
     /* progress + background morph */
@@ -85,6 +126,18 @@
       if (count && idx) count.textContent = idx;
 
       panels.forEach(function (p) { p.classList.toggle('is-active', p === active); });
+
+      // parallax, folded into this same frame rather than a second listener
+      if (!reduced && horizontal.matches) {
+        for (var j = 0; j < shots.length; j++) {
+          var img = shots[j];
+          var host = img.closest('.panel');
+          if (!host) continue;
+          var r = host.getBoundingClientRect();
+          var off = (r.left + r.width / 2 - window.innerWidth / 2) / window.innerWidth;
+          img.style.setProperty('--px', (off * -22).toFixed(2) + 'px');
+        }
+      }
     }
     function onScroll() {
       if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
@@ -102,23 +155,6 @@
     rail.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     update();
-
-    /* parallax drift on the mockups */
-    if (!reduced) {
-      var shots = rail.querySelectorAll('.card__shot img');
-      rail.addEventListener('scroll', function () {
-        if (!horizontal.matches) return;
-        window.requestAnimationFrame(function () {
-          shots.forEach(function (img) {
-            var card = img.closest('.panel');
-            if (!card) return;
-            var rect = card.getBoundingClientRect();
-            var off = (rect.left + rect.width / 2 - window.innerWidth / 2) / window.innerWidth;
-            img.style.setProperty('--px', (off * -22).toFixed(2) + 'px');
-          });
-        });
-      }, { passive: true });
-    }
   }
 
   /* ---------- custom cursor ---------- */
@@ -130,17 +166,22 @@
     document.body.appendChild(el);
     var label = el.querySelector('.cursor__label');
 
+    /* Pinned to the pointer, not eased toward it. The previous 0.18 lerp
+       made the ring trail behind the cursor, so moving rightward across a
+       card left it sitting to the left of what you were pointing at. */
     var x = window.innerWidth / 2, y = window.innerHeight / 2;
-    var cx = x, cy = y;
+    var queued = false;
 
-    document.addEventListener('mousemove', function (e) { x = e.clientX; y = e.clientY; });
+    function place() {
+      queued = false;
+      el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) translate(-50%,-50%)';
+    }
 
-    (function loop() {
-      cx += (x - cx) * 0.18;
-      cy += (y - cy) * 0.18;
-      el.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0) translate(-50%,-50%)';
-      window.requestAnimationFrame(loop);
-    })();
+    document.addEventListener('mousemove', function (e) {
+      x = e.clientX; y = e.clientY;
+      if (!queued) { queued = true; window.requestAnimationFrame(place); }
+    }, { passive: true });
+    place();
 
     document.querySelectorAll('[data-cursor]').forEach(function (target) {
       target.addEventListener('mouseenter', function () {
