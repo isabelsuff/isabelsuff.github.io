@@ -163,18 +163,32 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
 [data-stage-on="dark"], body[data-on="dark"]  { --chrome-ink: #F2F0EC; --chrome-bg: #16150F; }
 [data-stage-on="light"], body[data-on="light"] { --chrome-ink: #16150F; --chrome-bg: #F4F1EA; }
 
-/* gallery arrows */
-.rail__nav { display: flex; gap: 0.5rem; margin-left: 0.5rem; }
+/* gallery arrows — edge-centred, where people look for them.
+   The first version sat in the progress rail at 55% opacity and was
+   too quiet to find. */
 .navarrow {
-  width: 2.1rem; height: 2.1rem;
+  position: fixed; top: 50%; z-index: 95;
+  transform: translateY(-50%);
+  width: 3.1rem; height: 3.1rem;
   display: grid; place-items: center;
-  border: 1px solid currentColor; border-radius: 99px;
-  color: inherit; opacity: 0.55;
-  transition: opacity 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease);
+  border-radius: 99px;
+  background: var(--chrome-ink);
+  color: var(--chrome-bg);
+  box-shadow: 0 6px 22px -10px rgba(0,0,0,0.5);
+  transition: opacity 0.3s var(--ease), transform 0.35s var(--ease),
+              background 0.6s var(--ease), color 0.6s var(--ease);
 }
-.navarrow svg { width: 15px; height: 15px; }
-.navarrow:hover:not(:disabled) { opacity: 1; background: var(--chrome-ink); color: var(--chrome-bg); }
-.navarrow:disabled { opacity: 0.18; cursor: default; }
+.navarrow--prev { left: clamp(0.75rem, 2vw, 1.75rem); }
+.navarrow--next { right: clamp(0.75rem, 2vw, 1.75rem); }
+.navarrow svg { width: 20px; height: 20px; }
+.navarrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.09); }
+.navarrow--prev:hover:not(:disabled) { transform: translateY(-50%) scale(1.09) translateX(-2px); }
+.navarrow--next:hover:not(:disabled) { transform: translateY(-50%) scale(1.09) translateX(2px); }
+/* fully hidden rather than dimmed: at either end a disabled arrow
+   would otherwise sit on top of the panel copy */
+.navarrow:disabled { opacity: 0; visibility: hidden; pointer-events: none; }
+/* stacked view scrolls normally, so the arrows have no job there */
+@media (max-width: 860px), (hover: none) { .navarrow { display: none; } }
 
 /* link with wiping underline */
 .link-wipe { position: relative; text-decoration: none; display: inline-block; }

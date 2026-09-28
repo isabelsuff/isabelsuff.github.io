@@ -103,10 +103,11 @@
       }
     }
 
-    var ticking = false;
-    rail.addEventListener('scroll', function () {
-      if (!ticking) { ticking = true; window.requestAnimationFrame(function () { ticking = false; paint(); }); }
-    }, { passive: true });
+    /* Called straight from the scroll event rather than deferred to
+       requestAnimationFrame: paint() no longer reads layout, so it is
+       cheap, and a dropped rAF callback would otherwise latch the
+       throttle flag and freeze the chrome for the rest of the session. */
+    rail.addEventListener('scroll', paint, { passive: true });
 
     /* ---- wheel: one gesture moves one panel ---- */
     var lock = false;
