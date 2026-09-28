@@ -179,10 +179,18 @@
 
 </main>
 
-<div class="rail" aria-hidden="true">
-  <span class="rail__count">00</span>
-  <span class="rail__track"><span class="rail__fill"></span></span>
-  <span class="rail__count">06</span>
+<div class="rail">
+  <span class="rail__count" aria-hidden="true">00</span>
+  <span class="rail__track" aria-hidden="true"><span class="rail__fill"></span></span>
+  <span class="rail__count" aria-hidden="true">06</span>
+  <span class="rail__nav">
+    <button class="navarrow" type="button" data-nav="prev" aria-label="Previous project" aria-controls="work">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="navarrow" type="button" data-nav="next" aria-label="Next project" aria-controls="work">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </span>
 </div>
 
 <footer class="footer" id="contact">

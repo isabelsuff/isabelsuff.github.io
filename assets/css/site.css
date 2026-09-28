@@ -107,11 +107,15 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
 /* ============================================================
    Custom cursor
    ============================================================ */
+/* No mix-blend-mode here (or on .masthead / .rail). A blended fixed
+   element forces the browser to recomposite the whole viewport behind
+   it on every scroll frame, which was a large part of the gallery lag.
+   Contrast now comes from [data-stage-on] instead. */
 .cursor {
   position: fixed; top: 0; left: 0; z-index: 900;
-  pointer-events: none; mix-blend-mode: difference;
+  pointer-events: none;
   width: 10px; height: 10px; border-radius: 99px;
-  background: #fff;
+  background: var(--chrome-ink, #16150F);
   transform: translate3d(-50%, -50%, 0);
   transition: width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s var(--ease);
   display: none;
@@ -125,9 +129,8 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
   position: absolute; inset: 0;
   display: grid; place-items: center;
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
-  text-transform: uppercase; color: #000;
+  text-transform: uppercase; color: var(--chrome-bg, #F4F1EA);
   opacity: 0; transition: opacity 0.25s var(--ease);
-  mix-blend-mode: normal;
 }
 .cursor.is-lg .cursor__label { opacity: 1; }
 @media (hover: hover) and (pointer: fine) {
@@ -144,7 +147,8 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
   display: flex; align-items: baseline; justify-content: space-between;
   gap: 1rem;
   padding: clamp(1.1rem, 2.5vw, 2rem) var(--gutter);
-  mix-blend-mode: difference; color: #fff;
+  color: var(--chrome-ink, #16150F);
+  transition: color 0.6s var(--ease);
 }
 .home .masthead { position: fixed; }
 .masthead a { text-decoration: none; }
@@ -152,6 +156,25 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
 .masthead__nav { display: flex; gap: clamp(1rem, 2.5vw, 2rem); font-size: var(--step--1); }
 .masthead__nav a { opacity: 0.75; transition: opacity 0.3s var(--ease); }
 .masthead__nav a:hover, .masthead__nav a[aria-current] { opacity: 1; }
+
+/* chrome colours, set from the active panel by the gallery
+   (and statically on inner pages via <body data-on="...">) */
+:root { --chrome-ink: #16150F; --chrome-bg: #F4F1EA; }
+[data-stage-on="dark"], body[data-on="dark"]  { --chrome-ink: #F2F0EC; --chrome-bg: #16150F; }
+[data-stage-on="light"], body[data-on="light"] { --chrome-ink: #16150F; --chrome-bg: #F4F1EA; }
+
+/* gallery arrows */
+.rail__nav { display: flex; gap: 0.5rem; margin-left: 0.5rem; }
+.navarrow {
+  width: 2.1rem; height: 2.1rem;
+  display: grid; place-items: center;
+  border: 1px solid currentColor; border-radius: 99px;
+  color: inherit; opacity: 0.55;
+  transition: opacity 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease);
+}
+.navarrow svg { width: 15px; height: 15px; }
+.navarrow:hover:not(:disabled) { opacity: 1; background: var(--chrome-ink); color: var(--chrome-bg); }
+.navarrow:disabled { opacity: 0.18; cursor: default; }
 
 /* link with wiping underline */
 .link-wipe { position: relative; text-decoration: none; display: inline-block; }
@@ -288,10 +311,11 @@ html.js .reveal[data-d="3"].in { transition-delay: 0.24s; }
   position: fixed; left: var(--gutter); right: var(--gutter); bottom: clamp(1.25rem, 3vh, 2.25rem);
   z-index: 90;
   display: flex; align-items: center; gap: 1rem;
-  mix-blend-mode: difference; color: #fff;
+  color: var(--chrome-ink, #16150F);
+  transition: color 0.6s var(--ease);
 }
-.rail__track { flex: 1; height: 1px; background: rgba(255,255,255,0.3); position: relative; }
-.rail__fill { position: absolute; inset: 0 auto 0 0; width: 0; background: #fff; }
+.rail__track { flex: 1; height: 1px; background: currentColor; opacity: 0.28; position: relative; }
+.rail__fill { position: absolute; inset: 0 auto 0 0; width: 0; background: currentColor; }
 .rail__count { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; }
 
 /* mobile: vertical stack fallback */

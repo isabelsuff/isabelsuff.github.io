@@ -24,7 +24,12 @@
     items.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---------- horizontal gallery ---------- */
+  /* ---------- horizontal gallery ----------
+     Paging, not per-frame scrolling. The previous version eased
+     rail.scrollLeft on every animation frame and then read offsetLeft /
+     offsetWidth / getBoundingClientRect() in the same frame, forcing a
+     synchronous layout each time. Now a wheel gesture picks a panel and
+     the browser animates there natively, and all geometry is cached. */
   function initGallery() {
     var rail = document.querySelector('.gallery');
     if (!rail) return;
@@ -33,128 +38,120 @@
     var panels = Array.prototype.slice.call(rail.querySelectorAll('.panel'));
     var fill = document.querySelector('.rail__fill');
     var count = document.querySelector('.rail__count');
-    var shots = rail.querySelectorAll('.card__shot img');
+    var prevBtn = document.querySelector('[data-nav="prev"]');
+    var nextBtn = document.querySelector('[data-nav="next"]');
+    var shots = Array.prototype.slice.call(rail.querySelectorAll('.card__shot img'));
 
-    /* Wheel -> horizontal.
-       Previously this wrote rail.scrollLeft on every wheel event, which
-       fought `scroll-snap-type: mandatory` and made reversing direction
-       stutter. Now the wheel only moves a target and one rAF loop eases
-       toward it, so snapping never competes with the input. */
-    var target = rail.scrollLeft;
-    var animating = false;
-
-    function maxScroll() { return rail.scrollWidth - rail.clientWidth; }
-
-    function ease() {
-      var diff = target - rail.scrollLeft;
-      if (Math.abs(diff) < 0.5) {
-        rail.scrollLeft = target;
-        animating = false;
-        rail.classList.remove('is-gliding');
-        return;
-      }
-      rail.scrollLeft += diff * 0.16;
-      window.requestAnimationFrame(ease);
+    /* ---- cached geometry: measured on load and resize only ---- */
+    var geo = [], railW = 0, maxX = 0;
+    function measure() {
+      railW = rail.clientWidth;
+      maxX = Math.max(0, rail.scrollWidth - railW);
+      geo = panels.map(function (p) {
+        return { left: p.offsetLeft, width: p.offsetWidth, on: p.getAttribute('data-on'),
+                 stage: p.getAttribute('data-stage'), index: p.getAttribute('data-index') };
+      });
     }
 
-    function glide(delta) {
-      target = Math.max(0, Math.min(maxScroll(), target + delta));
-      if (!animating) {
-        animating = true;
-        rail.classList.add('is-gliding');
-        window.requestAnimationFrame(ease);
+    function clamp(i) { return Math.max(0, Math.min(panels.length - 1, i)); }
+
+    function indexAt(x) {
+      var mid = x + railW / 2;
+      for (var i = 0; i < geo.length; i++) {
+        if (geo[i].left <= mid && geo[i].left + geo[i].width >= mid) return i;
       }
+      return x <= 0 ? 0 : panels.length - 1;
     }
 
-    function onWheel(e) {
-      if (!horizontal.matches) return;
-      // let real horizontal intent (trackpad swipe) pass through natively
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-
-      var atEnd = rail.scrollLeft >= maxScroll() - 2;
-      var atStart = rail.scrollLeft <= 2;
-      if ((atEnd && e.deltaY > 0) || (atStart && e.deltaY < 0)) {
-        animating = false;
-        target = rail.scrollLeft;
-        return; // release the wheel to the page so the footer stays reachable
-      }
-
-      e.preventDefault();
-      // resync if the user scrolled by other means since the last glide
-      if (!animating) target = rail.scrollLeft;
-      glide(e.deltaY * 1.1);
+    function targetFor(i) {
+      var g = geo[i];
+      return Math.max(0, Math.min(maxX, g.left - (railW - g.width) / 2));
     }
-    rail.addEventListener('wheel', onWheel, { passive: false });
 
-    // a real horizontal swipe scrolls natively; keep our target in step
-    rail.addEventListener('scroll', function () {
-      if (!animating) target = rail.scrollLeft;
-    }, { passive: true });
+    function goTo(i, instant) {
+      i = clamp(i);
+      rail.scrollTo({ left: targetFor(i), behavior: (instant || reduced) ? 'auto' : 'smooth' });
+    }
 
-    /* keyboard */
-    rail.addEventListener('keydown', function (e) {
-      if (!horizontal.matches) return;
-      var step = rail.clientWidth * 0.8;
-      if (!animating) target = rail.scrollLeft;
-      if (e.key === 'ArrowRight' || e.key === 'PageDown') { glide(step); e.preventDefault(); }
-      if (e.key === 'ArrowLeft' || e.key === 'PageUp') { glide(-step); e.preventDefault(); }
-      if (e.key === 'Home') { target = 0; glide(0); e.preventDefault(); }
-      if (e.key === 'End') { target = maxScroll(); glide(0); e.preventDefault(); }
-    });
+    /* ---- paint: no layout reads, only cached values ---- */
+    var lastPx = [];
+    function paint() {
+      var x = rail.scrollLeft;
+      if (fill) fill.style.width = (maxX > 0 ? (x / maxX) * 100 : 0).toFixed(2) + '%';
 
-    /* progress + background morph */
-    var ticking = false;
-    function update() {
-      ticking = false;
-      var max = rail.scrollWidth - rail.clientWidth;
-      var pct = max > 0 ? rail.scrollLeft / max : 0;
-      if (fill) fill.style.width = (pct * 100).toFixed(2) + '%';
+      var i = indexAt(x), g = geo[i];
+      if (g.stage) document.documentElement.style.setProperty('--stage', g.stage);
+      if (g.on) document.documentElement.setAttribute('data-stage-on', g.on);
+      if (count && g.index) count.textContent = g.index;
+      if (prevBtn) prevBtn.disabled = x <= 2;
+      if (nextBtn) nextBtn.disabled = x >= maxX - 2;
 
-      // which panel is centred
-      var mid = rail.scrollLeft + rail.clientWidth / 2;
-      var active = null;
-      for (var i = 0; i < panels.length; i++) {
-        var p = panels[i];
-        if (p.offsetLeft <= mid && p.offsetLeft + p.offsetWidth >= mid) { active = p; break; }
-      }
-      if (!active) return;
-
-      var stage = active.getAttribute('data-stage');
-      if (stage) document.documentElement.style.setProperty('--stage', stage);
-
-      var idx = active.getAttribute('data-index');
-      if (count && idx) count.textContent = idx;
-
-      panels.forEach(function (p) { p.classList.toggle('is-active', p === active); });
-
-      // parallax, folded into this same frame rather than a second listener
       if (!reduced && horizontal.matches) {
+        var center = x + railW / 2;
         for (var j = 0; j < shots.length; j++) {
-          var img = shots[j];
-          var host = img.closest('.panel');
+          var host = shots[j].closest('.panel');
           if (!host) continue;
-          var r = host.getBoundingClientRect();
-          var off = (r.left + r.width / 2 - window.innerWidth / 2) / window.innerWidth;
-          img.style.setProperty('--px', (off * -22).toFixed(2) + 'px');
+          var k = panels.indexOf(host);
+          if (k < 0) continue;
+          var pc = geo[k].left + geo[k].width / 2;
+          var px = ((pc - center) / railW) * -22;
+          if (lastPx[j] === undefined || Math.abs(px - lastPx[j]) > 0.5) {
+            shots[j].style.setProperty('--px', px.toFixed(1) + 'px');
+            lastPx[j] = px;
+          }
         }
       }
     }
-    function onScroll() {
-      if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
-    }
-    /* stacked (mobile) mode: the stage can't morph, so paint each panel */
+
+    var ticking = false;
+    rail.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(function () { ticking = false; paint(); }); }
+    }, { passive: true });
+
+    /* ---- wheel: one gesture moves one panel ---- */
+    var lock = false;
+    rail.addEventListener('wheel', function (e) {
+      if (!horizontal.matches) return;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // real sideways swipe: let it through
+
+      var x = rail.scrollLeft;
+      if ((x >= maxX - 2 && e.deltaY > 0) || (x <= 2 && e.deltaY < 0)) return; // release to the page
+
+      e.preventDefault();
+      if (lock || Math.abs(e.deltaY) < 4) return;
+      lock = true;
+      goTo(indexAt(x) + (e.deltaY > 0 ? 1 : -1));
+      setTimeout(function () { lock = false; }, 420);
+    }, { passive: false });
+
+    /* ---- arrows ---- */
+    function step(dir) { return function () { goTo(indexAt(rail.scrollLeft) + dir); }; }
+    if (prevBtn) prevBtn.addEventListener('click', step(-1));
+    if (nextBtn) nextBtn.addEventListener('click', step(1));
+
+    /* ---- keyboard ---- */
+    rail.addEventListener('keydown', function (e) {
+      if (!horizontal.matches) return;
+      var i = indexAt(rail.scrollLeft);
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') { goTo(i + 1); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { goTo(i - 1); e.preventDefault(); }
+      else if (e.key === 'Home') { goTo(0); e.preventDefault(); }
+      else if (e.key === 'End') { goTo(panels.length - 1); e.preventDefault(); }
+    });
+
+    /* ---- stacked (mobile): paint each panel, stage cannot morph ---- */
     function syncStacked() {
       var stacked = !horizontal.matches;
       panels.forEach(function (p) {
         p.style.backgroundColor = stacked ? (p.getAttribute('data-stage') || '') : '';
       });
+      if (stacked) document.documentElement.removeAttribute('data-stage-on');
     }
-    syncStacked();
-    if (horizontal.addEventListener) horizontal.addEventListener('change', syncStacked);
 
-    rail.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    update();
+    function refresh() { measure(); syncStacked(); paint(); }
+    refresh();
+    window.addEventListener('resize', refresh);
+    if (horizontal.addEventListener) horizontal.addEventListener('change', refresh);
   }
 
   /* ---------- custom cursor ---------- */
